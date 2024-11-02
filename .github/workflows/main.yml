@@ -2,9 +2,9 @@ name: Unit Tests
 
 on:
   push:
-    branches: [ Main ]  # or 'master' if that's your primary branch name
+    branches: [ main ]  # or 'master' if that's your primary branch name
   pull_request:
-    branches: [ Main ]
+    branches: [ main ]
 
 jobs:
   backend-tests:
