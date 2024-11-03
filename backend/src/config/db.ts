@@ -4,13 +4,15 @@ export function connectDb() {
 
     const USER = process.env.DATABASE_USER;
     const PASSWORD = process.env.DATABASE_PASSWORD;
-
-    console.log(`User: ${USER}`)
+    
+    const uri = process.env.NODE_ENV == 'test' && typeof process.env.MONGO_URI !== 'undefined' ?
+        process.env.MONGO_URI :
+        `mongodb+srv://${USER}:${PASSWORD}@mongocluster.erslo.mongodb.net/?retryWrites=true&w=majority&appName=CSE110project`;
 
     mongoose.connect(
-        `mongodb+srv://${USER}:${PASSWORD}@mongocluster.erslo.mongodb.net/?retryWrites=true&w=majority&appName=CSE110project`,
+        uri,
         { useNewUrlParser: true },
-        err => {if (err) console.log(err);}
+        err => { if (err) console.log(err); }
     );
 
 };
