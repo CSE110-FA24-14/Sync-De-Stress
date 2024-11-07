@@ -8,7 +8,7 @@ test("renders login form", () => {
         <BrowserRouter>
           <LoginPage />
         </BrowserRouter>
-      );
+    );
     const loginButton = screen.getByText("Login");
     expect(loginButton).toBeInTheDocument();
 });
@@ -18,10 +18,37 @@ test("renders signup form", () => {
         <BrowserRouter>
           <SignUpPage />
         </BrowserRouter>
-      );
+    );
     const signupButton = screen.getByText("Sign Up");
     expect(signupButton).toBeInTheDocument();
 });
+
+test("'I don't have an account button' goes to Sign Up Page", () => {
+    render(
+        <BrowserRouter>
+          <LoginPage />
+          <SignUpPage />
+        </BrowserRouter>
+    );
+    const loginButton = screen.getByText("I don't have an account.");
+    fireEvent.click(loginButton);
+    expect(window.location.pathname).toBe('/SignUpPage');
+});
+
+test("'I already have an account button' goes to Login Page", () => {
+    render(
+        <BrowserRouter>
+          <LoginPage />
+          <SignUpPage />
+        </BrowserRouter>
+    );
+    const signupButton = screen.getByText("I already have an account.");
+    fireEvent.click(signupButton);
+    expect(window.location.pathname).toBe('/');
+});
+
+// test cases for loginHandler, signupHandler, preventdefault functionality
+// having difficulty with this though so not pushing any faulty tests
 
 /*
 test("renders create note form", () => {
