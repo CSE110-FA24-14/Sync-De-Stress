@@ -1,21 +1,35 @@
-import { Schema, Types, model } from "mongoose";
-import { UserInterface } from "../shared/interface/modelInterface";
+import { Schema, model } from "mongoose";
+import { ProfileInterface } from "../shared/interface/modelInterface";
 
-const UserSchema: Schema<UserInterface> = new Schema({
-    "email" : {
-        type: String,
-        required: true,
-        unique: true
-    },
-    "password": {
+const ProfileSchema: Schema<ProfileInterface> = new Schema({
+    "username": {
         type: String,
         required: true
     },
-    "is_superuser": {
-        type: Boolean,
-        default: false,
+    "description": {
+        type: String,
+        default: ""
+    },
+    "dateOfBirth": {
+        type: String,
         required: true
-    }
-}, {versionKey: false});
+    },
+    "year": {
+        type: String,
+        required: true
+    },
+    "major": {
+        type: String,
+        required: true
+    },
+    "musicPreference": {
+        type: String,
+        required: true
+    },
+    "favArtists": {
+        type: String,
+        required: true
+    },
+}, { versionKey: false });
 
-export default model<UserInterface>("User", UserSchema);
+export default model<ProfileInterface>("Profile", ProfileSchema);
