@@ -6,6 +6,14 @@ export interface UserInterface extends Document {
   is_superuser: Boolean
 }
 
+export interface AuthInterface extends Document {
+  user_id: Types.ObjectId,
+  auth1: String,
+  auth2: String,
+  created: Date,
+  expired: Date
+}
+
 export interface ProfileInterface extends Document {
     username: string; // Field for username
     description?: string; // Optional field for a description
