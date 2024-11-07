@@ -5,6 +5,7 @@
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/mongoose": "^5.11.97",
-    "@types/node": "^22.9.0"
+    "@types/node": "^22.9.0",
+    "mongodb-memory-server": "^10.1.2"
   }
 }
