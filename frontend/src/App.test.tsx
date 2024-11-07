@@ -22,4 +22,4 @@ test("renders Login", () => {
   );
   const loginElement = screen.getByText(/Login/i);
   expect(loginElement).toBeInTheDocument();
- });
+});
