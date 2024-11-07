@@ -11,7 +11,7 @@ const ProfileSchema: Schema<ProfileInterface> = new Schema({
         default: ""
     },
     "dateOfBirth": {
-        type: String,
+        type: Date,
         required: true
     },
     "year": {
@@ -22,11 +22,35 @@ const ProfileSchema: Schema<ProfileInterface> = new Schema({
         type: String,
         required: true
     },
+    "college": {
+        type: String,
+        required: true
+    },
+    "classes": {
+        type: String,
+        required: true
+    },
+    "hobby": {
+        type: String,
+        required: true
+    },
     "musicPreference": {
         type: String,
         required: true
     },
     "favArtists": {
+        type: String,
+        required: true
+    },
+    "friend": {
+        type: [String], 
+        default: [], 
+      },
+    "friend_requested": {
+        type: [String], 
+        default: [], 
+      },
+    "contact": {
         type: String,
         required: true
     },
