@@ -1,4 +1,10 @@
-import { Document } from "mongoose";
+import { Document, ObjectId, Types } from "mongoose"
+
+export interface UserInterface extends Document {
+  email: String
+  password: String,
+  is_superuser: Boolean
+}
 
 export interface ProfileInterface extends Document {
     username: string; // Field for username
