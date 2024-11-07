@@ -11,11 +11,7 @@ const EventSchema: Schema<EventInterface> = new Schema({
         default: ""
     },
     "eventDate": {
-        type: String,
-        required: true
-    },
-    "eventTime": {
-        type: String,
+        type: Date,
         required: true
     },
     "location": {
@@ -30,6 +26,7 @@ const EventSchema: Schema<EventInterface> = new Schema({
         type: String,
         default: ""
     }
+    
 }, { versionKey: false });
 
 export default model<EventInterface>("Event", EventSchema);
