@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getAllEvents, getSimilarEvents, createEvent, getEventById, getRegisteredEvents, registerForEvent } from "../../controller/events";
+
 const router: Router = Router();
 export default (app: Router) => {
     router.get("/events", getAllEvents);                     // Get list of all events

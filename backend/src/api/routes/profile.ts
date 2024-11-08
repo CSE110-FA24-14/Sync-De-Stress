@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { getProfile, createProfile, editProfile } from "../../controller/profile";
+
+
 const router: Router = Router();
 export default (app: Router) => {
     router.get("/profile", getProfile);              // Get user profile
