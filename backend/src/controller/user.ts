@@ -25,6 +25,7 @@ export async function register(req: Request, res: Response) {
         };
 
         res.status(400).send(response);
+        return;
 
     } else {
 
@@ -40,6 +41,7 @@ export async function register(req: Request, res: Response) {
                 };
 
                 res.status(400).send(response);
+                return;
 
             };
 
@@ -60,6 +62,7 @@ export async function register(req: Request, res: Response) {
             };
 
             res.status(200).send(response);
+            return;
 
         } catch (err:any) {
 
@@ -81,6 +84,7 @@ export async function register(req: Request, res: Response) {
             console.log(err);
 
             res.status(500).send(response);
+            return;
         };
 
     };
@@ -105,6 +109,7 @@ export async function login(req: Request, res: Response) {
             };
 
             res.status(400).send(response);
+            return;
 
         } else {
 
@@ -128,6 +133,7 @@ export async function login(req: Request, res: Response) {
                         };
 
                         res.send(response);
+                        return;
                 } else {
 
                     // Construct a failure response when login has failed
@@ -137,6 +143,7 @@ export async function login(req: Request, res: Response) {
                     };
 
                     res.send(response);
+                    return;
 
                 };
             } else{
@@ -148,12 +155,14 @@ export async function login(req: Request, res: Response) {
                 };
 
                 res.send(response);
+                return;
 
             }
         };
     } catch (err) {
         console.log(err);
         res.sendStatus(500);
+        return;
     };
 
 };
