@@ -5,12 +5,31 @@ import { Link } from "react-router-dom";
 export const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-    const loginHandler = (e: React.ChangeEvent<any>) => {
+    const loginHandler = async (e: React.ChangeEvent<any>) => {
         e.preventDefault();
-        // want to replace browser error messages with custom ones
-        // send to backend
         console.log('email, password', email, password)
+        
+        // UserInterface
+        try {
+            const response = await fetch('/api/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, password })
+            });
+      
+            if (response.ok) {
+              //
+            }
+            else {
+              const data = await response.json();
+              setError(data.message || 'Login failed');
+            }
+        }
+        catch (error) {
+            setError('Login Error');
+        }
     };
 
     return (
@@ -20,8 +39,8 @@ export const LoginPage = () => {
             </header>
             <div>
                 <form className="login-form" onSubmit={loginHandler}>
+                <span className="error-message" id="emailError">{error}</span>
                     <div>
-                        <span className="error-message" id="emailError"></span>
                         <input
                             placeholder="Email"
                             type="email"
@@ -30,9 +49,8 @@ export const LoginPage = () => {
                         >
                         </input>
                     </div>
-    
+
                     <div>
-                        <span className="error-message" id="passwordError"></span>
                         <input
                         placeholder="Password"
                         type="password"

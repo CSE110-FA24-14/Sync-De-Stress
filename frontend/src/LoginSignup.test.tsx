@@ -46,14 +46,3 @@ test("'I already have an account button' goes to Login Page", () => {
     fireEvent.click(signupButton);
     expect(window.location.pathname).toBe('/');
 });
-
-// test cases for loginHandler, signupHandler, preventdefault functionality
-// having difficulty with this though so not pushing any faulty tests
-
-/*
-test("renders create note form", () => {
- render(<LoginPage />); // this didn't work
- const createNoteButton = screen.getByText("Create Note");
- expect(createNoteButton).toBeInTheDocument();
-});
-*/
