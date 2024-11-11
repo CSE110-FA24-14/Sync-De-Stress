@@ -2,6 +2,11 @@ import { Schema, model } from "mongoose";
 import { ProfileInterface } from "../shared/interface/modelInterface";
 
 const ProfileSchema: Schema<ProfileInterface> = new Schema({
+    "userId": {
+        type: String,
+        required: true,
+        unique: true
+    },
     "username": {
         type: String,
         required: true
