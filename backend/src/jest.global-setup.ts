@@ -5,5 +5,6 @@ module.exports = async () => {
     const uri = mongoServer.getUri();
 
     process.env.MONGO_URI = uri;
+    process.env.JWT_SECRET = 'testsecret';
     (global).__MONGOINSTANCE = mongoServer;
 };
