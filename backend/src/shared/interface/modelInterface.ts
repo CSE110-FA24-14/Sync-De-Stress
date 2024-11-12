@@ -15,6 +15,7 @@ export interface AuthInterface extends Document {
 }
 
 export interface ProfileInterface extends Document {
+    userId: string;
     username: string; // Field for username
     description?: string; // Optional field for a description
     dateOfBirth: Date; // Date
