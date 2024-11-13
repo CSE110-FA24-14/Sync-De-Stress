@@ -22,7 +22,7 @@ const SignUp: React.FC = () => {
     try {
       const response = await register(email, password);
       console.log(response);
-      navigate('/login'); // Redirect to login page on successful registration
+      navigate('/CreateProfile'); // Redirect to create profile page on successful registration
     } catch (err: any) {
       setError(err.message || 'Registration failed');
     }
