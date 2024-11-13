@@ -154,7 +154,7 @@ export async function login(req: Request, res: Response) {
                     message: "login unsuccessful due to incorrect email or password",
                 };
 
-                res.send(response);
+                res.status(400).send(response);
                 return;
 
             }

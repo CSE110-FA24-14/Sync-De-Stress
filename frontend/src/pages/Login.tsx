@@ -19,6 +19,7 @@ const Login: React.FC = () => {
     try {
       const response = await login(email, password);
       console.log(response);
+
       localStorage.setItem('token', response.token); // Store JWT token
       setSuccess('Login successful! Redirecting...');
       setTimeout(() => navigate('/home'), 1500); // Redirect 
@@ -61,7 +62,7 @@ const Login: React.FC = () => {
       {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
       
       <p className="form-link">
-        <Link to="/signup">I don't have an account.</Link>
+        <Link to="/signup" style={{ textDecoration: 'underLine', color: 'inherit' }}>I don't have an account.</Link>
       </p>
     </div>
   );
