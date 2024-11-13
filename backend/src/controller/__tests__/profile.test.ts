@@ -1,8 +1,8 @@
 // src/controller/__tests__/profile.test.ts
 
 import { Request, Response } from 'express';
-import { createProfile } from '../profile';
-import { createProfileService } from '../../services/profile';
+import { createProfile, editProfile } from '../profile';
+import { createProfileService, updateProfileService } from '../../services/profile';
 import { ProfileInterface } from '../../shared/interface/modelInterface';
 
 jest.mock('../../services/profile');
@@ -232,6 +232,167 @@ describe('CreateProfile Controller', () => {
       expect(res.send).toHaveBeenCalledWith({
         status: 'failure',
         message: 'There was a failure while trying to create the profile, please try again',
+      });
+    });
+  });
+});
+
+
+describe('EditProfile Controller', () => {
+  describe('editProfile', () => {
+    it('should edit a profile successfully', async () => {
+      const req = {
+        body: {
+          authPayload: {
+            id: 'user123',
+            email: 'user@example.com',
+            iat: 1234567890,
+            exp: 1234567890 + 3600,
+          },
+          username: 'updatedUser',
+          dateOfBirth: '1992-05-01',
+          year: 'Graduate',
+          major: 'Data Science',
+          college: 'Engineering',
+          classes: 'DS201, DS202',
+          hobby: 'Gaming',
+          musicPreference: 'Jazz',
+          favArtists: 'Artist3, Artist4',
+          contact: 'updatedUser@example.com',
+          description: 'Updated profile description.',
+        },
+      } as Request;
+
+      const res = mockResponse();
+
+      const updatedProfile: Partial<ProfileInterface> = {
+        _id: 'profile123',
+        userId: 'user123',
+        username: 'updatedUser',
+        dateOfBirth: new Date('1992-05-01'),
+        year: 'Graduate',
+        major: 'Data Science',
+        college: 'Engineering',
+        classes: 'DS201, DS202',
+        hobby: 'Gaming',
+        musicPreference: 'Jazz',
+        favArtists: 'Artist3, Artist4',
+        contact: 'updatedUser@example.com',
+        description: 'Updated profile description.',
+      };
+
+      (updateProfileService as jest.Mock).mockResolvedValue(updatedProfile);
+
+      await editProfile(req, res);
+
+      expect(updateProfileService).toHaveBeenCalledWith('user123', {
+        username: 'updatedUser',
+        dateOfBirth: new Date('1992-05-01'),
+        year: 'Graduate',
+        major: 'Data Science',
+        college: 'Engineering',
+        classes: 'DS201, DS202',
+        hobby: 'Gaming',
+        musicPreference: 'Jazz',
+        favArtists: 'Artist3, Artist4',
+        contact: 'updatedUser@example.com',
+        description: 'Updated profile description.',
+      });
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.send).toHaveBeenCalledWith({
+        status: 'success',
+        message: `Profile for userId user123 has been successfully updated`,
+      });
+    });
+
+    it('should handle profile not found', async () => {
+      const req = {
+        body: {
+          authPayload: {
+            id: 'user123',
+            email: 'user@example.com',
+            iat: 1234567890,
+            exp: 1234567890 + 3600,
+          },
+          username: 'nonexistentUser',
+        },
+      } as Request;
+
+      const res = mockResponse();
+
+      (updateProfileService as jest.Mock).mockResolvedValue(null);
+
+      await editProfile(req, res);
+
+      expect(updateProfileService).toHaveBeenCalledWith('user123', expect.any(Object));
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.send).toHaveBeenCalledWith({
+        status: 'failure',
+        message: 'Profile not found',
+      });
+    });
+
+    it('should handle validation errors', async () => {
+      const req = {
+        body: {
+          authPayload: {
+            id: 'user123',
+            email: 'user@example.com',
+            iat: 1234567890,
+            exp: 1234567890 + 3600,
+          },
+          username: 'updatedUser',
+          dateOfBirth: 'invalid-date',
+        },
+      } as Request;
+
+      const res = mockResponse();
+
+      const validationError = {
+        name: 'ValidationError',
+        errors: {
+          dateOfBirth: { message: 'Invalid date format' },
+        },
+      };
+      (updateProfileService as jest.Mock).mockRejectedValue(validationError);
+
+      await editProfile(req, res);
+
+      expect(updateProfileService).toHaveBeenCalledWith('user123', expect.any(Object));
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.send).toHaveBeenCalledWith({
+        status: 'failure',
+        message: 'Validation Error: Invalid date format',
+      });
+    });
+
+    it('should handle unexpected errors', async () => {
+      const req = {
+        body: {
+          authPayload: {
+            id: 'user123',
+            email: 'user@example.com',
+            iat: 1234567890,
+            exp: 1234567890 + 3600,
+          },
+          username: 'updatedUser',
+          dateOfBirth: '1992-05-01',
+        },
+      } as Request;
+
+      const res = mockResponse();
+
+      const unexpectedError = new Error('Unexpected server error');
+      (updateProfileService as jest.Mock).mockRejectedValue(unexpectedError);
+
+      await editProfile(req, res);
+
+      expect(updateProfileService).toHaveBeenCalledWith('user123', expect.any(Object));
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.send).toHaveBeenCalledWith({
+        status: 'failure',
+        message: 'There was a failure while trying to update the profile, please try again',
       });
     });
   });

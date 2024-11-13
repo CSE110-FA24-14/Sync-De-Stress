@@ -14,7 +14,7 @@ const PORT: Number = Number(process.env.port) || 3102;
 
 // Setup middlewares
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(mongoSanitize());
 app.use("/", router());
