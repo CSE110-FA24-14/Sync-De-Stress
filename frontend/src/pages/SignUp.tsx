@@ -67,7 +67,7 @@ const SignUp: React.FC = () => {
       </form>
       {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
       <p className="form-link">
-        <Link to="/login">I already have an account.</Link>
+        <Link to="/login" style={{ textDecoration: 'underLine', color: 'inherit' }}>I already have an account.</Link>
       </p>
     </div>
   );
