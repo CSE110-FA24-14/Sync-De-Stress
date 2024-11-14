@@ -12,6 +12,7 @@ import NavBar from './NavBar';
 function App() {
   return (
     <Router>
+      <NavBar />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
@@ -21,7 +22,6 @@ function App() {
         <Route path="/people" element={<People />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
-      <NavBar />
     </Router>
   );
 }
