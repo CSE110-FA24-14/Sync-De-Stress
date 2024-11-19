@@ -25,6 +25,10 @@ const EventSchema: Schema<EventInterface> = new Schema({
     "coverPhoto": {
         type: String,
         default: ""
+    },
+    "userRegistered": {
+        type: [String],
+        default: []
     }
     
 }, { versionKey: false });

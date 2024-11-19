@@ -39,6 +39,7 @@ export interface EventInterface extends Document {
   location: string; // Event location
   priceEstimate?: number; // Optional price estimate
   coverPhoto?: string; // Optional cover photo (e.g., URL or binary data)
+  userRegistered: string[];
 }
 
 export interface NotificationInterface extends Document {
