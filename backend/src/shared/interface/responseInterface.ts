@@ -10,6 +10,7 @@ export interface LoginResponseInterface extends BaseResponseInterface {
 
 export interface GetEventResponseInterface extends BaseResponseInterface{
     events: {
+        id: string;
         eventName: string; // Event name
         description?: string; // Optional event description
         eventDate: Date; //Event Date and Time

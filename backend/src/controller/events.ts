@@ -41,6 +41,7 @@ export async function getAllEvents(req: Request, res: Response) {
 
         // Map events to the response interface
         const eventResponses = events.map(event => ({
+            id: event._id,
             eventName: event.eventName,
             description: event.description,
             eventDate: event.eventDate,
