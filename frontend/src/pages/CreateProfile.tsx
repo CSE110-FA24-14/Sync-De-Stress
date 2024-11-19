@@ -17,7 +17,7 @@ const CreateProfile: React.FC = () => {
       {/* Name Field */}
       <div className="Form-section">
         <label>Name</label>
-        <input type="text" placeholder="Enter your full name" />
+        <textarea placeholder="Enter your full name"></textarea>
       </div>
 
       {/* Description Field */}
@@ -121,19 +121,19 @@ const CreateProfile: React.FC = () => {
       {/* Classes Field */}
       <div className="Form-section">
         <label>Classes</label>
-        <input type="text" placeholder="Enter your current classes" />
+        <textarea placeholder="Enter your current classes"></textarea>
       </div>
 
       {/* Hobby Field */}
       <div className="Form-section">
         <label>Hobby</label>
-        <input type="text" placeholder="Enter your hobby" />
+        <textarea placeholder="Enter your hobby"></textarea>
       </div>
 
       {/* Contact Field */}
       <div className="Form-section">
         <label>Contact</label>
-        <input type="text" placeholder="Enter your contact information" />
+        <textarea placeholder="Enter your contact information"></textarea>
       </div>
 
       {/* Musical Preferences Section */}
@@ -196,13 +196,13 @@ const CreateProfile: React.FC = () => {
       {/* Favorite Songs Field */}
       <div className="Form-section">
         <label>Favorite Songs</label>
-        <input type="text" placeholder="Enter your favorite songs" />
+        <textarea placeholder="Enter your favorite songs"></textarea>
       </div>
 
       {/* Favorite Artists Field */}
       <div className="Form-section">
         <label>Favorite Singers/Artists</label>
-        <input type="text" placeholder="Enter your favorite singers/artists" />
+        <textarea placeholder="Enter your favorite singers/artists"></textarea>
       </div>
 
       {/* Next Button */}
