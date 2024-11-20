@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
 
+import { BaseResponseInterface } from "../shared/interface/responseInterface";
+import { createEventService } from "../services/events";
+import { register } from "./user";
+
 // Get list of all events
 export async function getAllEvents(req: Request, res: Response) {
     // Logic for fetching all events
@@ -14,8 +18,27 @@ export async function getSimilarEvents(req: Request, res: Response) {
 
 // Create a new event
 export async function createEvent(req: Request, res: Response) {
-    // Logic for creating a new event
-    res.status(201).json({ message: 'Event created successfully' });
+    let response: BaseResponseInterface;
+    try {
+        const eventData = req.body;
+        const createdEvent = await createEventService(eventData);
+        res.status(201).send({
+            status: 'success',
+            message: 'Event created successfully',
+            event: createdEvent,
+        });
+    } catch (error: any) {
+        if (error.name === 'ValidationError') {
+            return res.status(400).send({
+                status: 'failure',
+                message: error.message,
+            });
+        }
+        res.status(500).send({
+            status: 'failure',
+            message: 'Failed to create event',
+        });
+    }
 }
 
 // Get event details by ID
