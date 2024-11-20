@@ -1,0 +1,43 @@
+.events_wrapper {
+    display: inline-block; /* Make the wrapper only as wide as the SVG */
+    padding: 10px; /* Adjust the padding as needed for wider hover effect */
+    background-color: transparent; 
+    cursor: pointer; 
+    width: 100px;
+    text-align: center;
+}
+
+.events_svg {
+    width: 40px;
+    height: auto;
+}
+
+.people_svg {
+    width: 40px;
+    height: auto;
+}
+
+.profile_svg {
+    width: 40px;
+    height: auto;
+}
+
+.events_wrapper:hover {
+    background-color: #e8def8; 
+    border-radius: 100px;
+}
+
+.selected {
+    background-color: #e8def8;
+    border-radius: 100px;
+}
+
+.navbar {
+    bottom: 0;
+    left: 0; 
+    right: 0; 
+    position: fixed; 
+    z-index: 5;
+    overflow: hidden; /* prevents navbar from extending beyond the screen */
+}
+  
