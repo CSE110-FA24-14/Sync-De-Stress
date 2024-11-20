@@ -26,7 +26,6 @@ export async function updateProfileService(userId: string, updatedData: Partial<
         { new: true } // Return the updated document
 
     )
-    console.log('Updated Profile:', updatedProfile);
     return updatedProfile;
 }
 

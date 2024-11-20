@@ -195,10 +195,10 @@ describe('getProfileService', () => {
   it('should throw an error if an unexpected error occurs', async () => {
     const mockUserId = 'user123';
     const mockError = new Error('Database error');
-
+  
     (ProfileModel.findOne as jest.Mock).mockRejectedValue(mockError);
-
-    await expect(getProfileService(mockUserId)).rejects.toThrow('Database error');
+  
+    await expect(getProfileService(mockUserId)).rejects.toThrow('Failed to retrieve profile');
     expect(ProfileModel.findOne).toHaveBeenCalledWith({ userId: mockUserId });
   });
 });
