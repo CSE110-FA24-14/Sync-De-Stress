@@ -59,6 +59,10 @@ const ProfileSchema: Schema<ProfileInterface> = new Schema({
         type: String,
         required: true
     },
+    "event_registered": {
+        type: [String],
+        default: []
+    }
 }, { versionKey: false });
 
 export default model<ProfileInterface>("Profile", ProfileSchema);

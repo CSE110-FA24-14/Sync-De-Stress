@@ -29,6 +29,7 @@ export interface ProfileInterface extends Document {
     contact: string; // Phone number, instagram, email
     friend: string[]; // Array of friend IDs as strings
     friend_requested: string[]; // Array of requested friend IDs as strings
+    event_registered: string[];
 }
 
 export interface EventInterface extends Document {
@@ -38,6 +39,7 @@ export interface EventInterface extends Document {
   location: string; // Event location
   priceEstimate?: number; // Optional price estimate
   coverPhoto?: string; // Optional cover photo (e.g., URL or binary data)
+  userRegistered: string[];
 }
 
 export interface NotificationInterface extends Document {
