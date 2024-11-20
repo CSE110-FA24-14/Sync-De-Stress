@@ -15,3 +15,4 @@ export async function createEventService(eventData: any) {
         throw new Error("Failed to create event");
     }
 }
+
