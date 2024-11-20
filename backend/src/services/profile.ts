@@ -37,4 +37,5 @@ export async function getProfileService(userId: string): Promise<ProfileInterfac
         console.error("Error retrieving profile:", error);
         throw new Error("Failed to retrieve profile");
     }
+    
 }
