@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { BaseResponseInterface } from "../shared/interface/responseInterface";
 import { ProfileInterface } from "../shared/interface/modelInterface";
-import { createProfileService } from "../services/profile";
+import { createProfileService, updateProfileService } from "../services/profile";
 
 // Get user profile
 export async function getProfile(req: Request, res: Response) {
@@ -109,6 +109,72 @@ export async function createProfile(req: Request, res: Response) {
 
 // Edit profile details
 export async function editProfile(req: Request, res: Response) {
-    // Logic for editing profile details
-    res.status(200).json({ message: 'Profile updated successfully' });
+    let response: BaseResponseInterface;
+
+    try {
+        // Extract authenticated user ID from request
+        const authPayload = req.body.authPayload;
+        const userId = authPayload.id;
+
+        // Prepare the updated profile data from the request body
+        const updatedProfileData: Partial<ProfileInterface> = {
+            username: req.body.username,
+            dateOfBirth: req.body.dateOfBirth ? new Date(req.body.dateOfBirth) : undefined,
+            year: req.body.year,
+            major: req.body.major,
+            college: req.body.college,
+            classes: req.body.classes,
+            hobby: req.body.hobby,
+            musicPreference: req.body.musicPreference,
+            favArtists: req.body.favArtists,
+            contact: req.body.contact,
+            description: req.body.description,
+        };
+
+        // Validate input data (simplified example, you may have more comprehensive validation logic)
+        if (!userId || typeof userId !== 'string' || !updatedProfileData.username) {
+            response = {
+                status: "failure",
+                message: "Validation Error: Missing or invalid input",
+            };
+            return res.status(400).send(response);
+        }
+
+        // Call the service to update the profile
+        const updatedProfile = await updateProfileService(userId, updatedProfileData);
+
+        // Handle the case where no profile was found
+        if (!updatedProfile) {
+            response = {
+                status: "failure",
+                message: "Profile not found",
+            };
+            return res.status(404).send(response);
+        }
+
+        // Success response
+        response = {
+            status: "success",
+            message: `Profile for userId ${userId} has been successfully updated`,
+        };
+        return res.status(200).send(response);
+
+    } catch (err: any) {
+        // Check for validation error from the service
+        if (err.name === 'ValidationError') {
+            response = {
+                status: "failure",
+                message: `Validation Error: ${err.errors?.dateOfBirth?.message || 'Invalid input'}`,
+            };
+            return res.status(400).send(response);
+        }
+
+        // Error response for other exceptions
+        response = {
+            status: "failure",
+            message: "There was a failure while trying to update the profile, please try again",
+        };
+        console.error("EditProfileController Error:", err);
+        return res.status(500).send(response);
+    }
 }

@@ -16,3 +16,15 @@ export async function createProfileService(profileData: Partial<ProfileInterface
 
     return savedProfile;
 }
+
+
+export async function updateProfileService(userId: string, updatedData: Partial<ProfileInterface>): Promise<ProfileInterface | null> {
+    // Find the user's profile by userId and update it with the new data
+    const updatedProfile = await ProfileModel.findOneAndUpdate(
+        { userId: userId },
+        { $set: updatedData },
+        { new: true } // Return the updated document
+    );
+
+    return updatedProfile;
+}
