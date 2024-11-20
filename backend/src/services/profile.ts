@@ -19,10 +19,12 @@ export async function createProfileService(profileData: Partial<ProfileInterface
 
 
 export async function updateProfileService(userId: string, updatedData: Partial<ProfileInterface>): Promise<ProfileInterface | null> {
+
     const updatedProfile = await ProfileModel.findOneAndUpdate(
         { userId: userId },
         { $set: updatedData },
         { new: true } // Return the updated document
+
     )
     console.log('Updated Profile:', updatedProfile);
     return updatedProfile;

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { BaseResponseInterface } from "../shared/interface/responseInterface";
 import { ProfileInterface } from "../shared/interface/modelInterface";
+
 import { createProfileService, updateProfileService, getProfileService} from "../services/profile";
 
 // Get user profile
@@ -158,7 +159,6 @@ export async function editProfile(req: Request, res: Response) {
             description: req.body.description,
         };
 
-        // Validate input data
         if (!userId || typeof userId !== 'string' || !updatedProfileData.username) {
             response = {
                 status: "failure",
@@ -169,7 +169,6 @@ export async function editProfile(req: Request, res: Response) {
 
         // Call the service to update the profile
         const updatedProfile = await updateProfileService(userId, updatedProfileData);
-
 
         // Handle the case where no profile was found
         if (!updatedProfile) {
@@ -184,7 +183,7 @@ export async function editProfile(req: Request, res: Response) {
         response = {
             status: "success",
             message: `Profile for userId ${userId} has been successfully updated`,
-    
+
         };
         return res.status(200).send(response);
 
