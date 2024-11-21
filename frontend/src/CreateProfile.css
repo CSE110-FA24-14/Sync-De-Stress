@@ -47,6 +47,7 @@
 
 .Form-section {
   margin-bottom: 15px;
+  margin-top: 17px;
 }
 
 .Form-section label {
@@ -64,6 +65,7 @@
   border: 1px solid #fbfafa;
   border-radius: 4px;
   box-sizing: border-box;
+  background-color: #fcfdfd;
 }
 
 .Form-section textarea {
