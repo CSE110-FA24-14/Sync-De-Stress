@@ -1,25 +1,25 @@
-/* CreateProfile.css */
+/* CreateForm.css */
 
-.CreateProfile-container {
+.CreateForm-container {
   max-width: 400px;
   margin: auto;
   padding: 20px;
   font-family: Arial, sans-serif;
 }
 
-.CreateProfile-header {
+.CreateForm-header {
   text-align: center;
   font-size: 24px;
   margin-bottom: 20px;
 }
 
-.ProfileImage-container {
+.FormImage-container {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
 }
 
-.ProfileImage-placeholder {
+.FormImage-placeholder {
   width: 100px;
   height: 100px;
   background-color: #e0e0e0;
@@ -32,7 +32,7 @@
   position: relative;
 }
 
-.ProfileImage-button {
+.FormImage-button {
   position: absolute;
   bottom: -5px;
   right: -5px;
@@ -61,7 +61,7 @@
   width: 100%;
   padding: 8px;
   font-size: 14px;
-  border: 1px solid #ccc;
+  border: 1px solid #fbfafa;
   border-radius: 4px;
   box-sizing: border-box;
 }
@@ -72,6 +72,22 @@
 
 .Form-section input[type="date"] {
   font-size: 14px;
+  background-color: #ffffff;
+}
+
+.Form-section input[type="text"] {
+  font-size: 14px;
+  background-color: #ffffff;
+}
+
+.Form-section input[type="number"] {
+  font-size: 14px;
+  background-color: #ffffff;
+}
+
+.Form-section input[type="time"] {
+  font-size: 14px;
+  background-color: #ffffff;
 }
 
 .MusicalPreference-header {
@@ -81,6 +97,7 @@
 }
 
 .Next-button {
+  margin-top: 20px;
   width: 100%;
   padding: 10px;
   font-size: 16px;
