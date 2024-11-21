@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../CreateProfile.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { create_success } from '../services/authService';
+import { create_profile } from '../services/authService';
 
 
 const CreateProfile: React.FC = () => {
@@ -24,7 +24,7 @@ const CreateProfile: React.FC = () => {
     setSuccess(''); // clear success messages
 
     try {
-        const response = await create_success(name, bio, classes, hobby, contact, songs, singers);
+        const response = await create_profile(name, bio, classes, hobby, contact, songs, singers);
         console.log(response);
         setSuccess('profile successfully created');
         navigate('/Profile');
@@ -196,7 +196,7 @@ const CreateProfile: React.FC = () => {
         <label><span style={{ color: "red" }}>*</span>Contact</label>
         <div>
           <input 
-              type = "tel"
+              type = "number"
               placeholder="Enter your contact information"
               value={contact}
               onChange={(e) => setContact(e.target.value)}
