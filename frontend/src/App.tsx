@@ -8,6 +8,7 @@ import Events from './pages/Events';
 import People from './pages/People';
 import Profile from './pages/Profile';
 import NavBar from './NavBar';
+import CreateEvent from './pages/CreateEvent';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="*" element={<Login />} />
         <Route path="/CreateProfile" element={<CreateProfile />} />
         <Route path="/home" element={<Events />} />
+        <Route path="/CreateEvent" element={<CreateEvent />} />
         <Route path="/people" element={<People />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>

@@ -1,16 +1,16 @@
 import React from 'react';
-import '../CreateProfile.css';
+import '../styles/CreateForm.css';
 
 const CreateProfile: React.FC = () => {
   return (
-    <div className="CreateProfile-container">
+    <div className="CreateForm-container">
       <h2 className="CreateProfile-header">Create Profile</h2>
 
       {/* Profile Picture Section */}
-      <div className="ProfileImage-container">
-        <div className="ProfileImage-placeholder">
+      <div className="FormImage-container">
+        <div className="FormImage-placeholder">
           <span>Profile Image</span>
-          <button className="ProfileImage-button">+</button>
+          <button className="FormImage-button">+</button>
         </div>
       </div>
 
