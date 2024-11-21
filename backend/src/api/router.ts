@@ -5,7 +5,7 @@ import profile from "./routes/profile";
 import notifications from "./routes/notifications";
 import people from "./routes/people";
 import artists from "./routes/artists";
-
+import upload from "./routes/upload";
 
 export default () => {
 
@@ -16,6 +16,7 @@ export default () => {
     notifications(router);
     people(router);
     artists(router);
+    upload(router);
 
     return router;
 }
