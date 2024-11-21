@@ -21,3 +21,7 @@ export interface GetEventResponseInterface extends BaseResponseInterface{
         registered: boolean;
     }[];
 }
+
+export interface RegisterEventResponseInterface extends BaseResponseInterface{
+    unregistered: boolean; // true if successfully unregistered, false if successfully registed after calling this endpoint
+}
