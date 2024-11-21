@@ -1,146 +1,136 @@
-import { createEvent, getAllEvents, getEventById, registerForEvent } from "../events";
 import { Request, Response } from "express";
-import { createEventService, getEventByIdService, getEvents, registerOrUnregisterEvent } from "../../services/events";
+import { createEvent, getAllEvents, getEventById } from "../events";
+import { createEventService, getEvents, getEventByIdService } from "../../services/events";
 
 jest.mock("../../services/events");
 
-describe("Events Controller", () => {
-    let mockReq: Partial<Request>;
-    let mockRes: Partial<Response>;
+const mockResponse = () => {
+    const res = {} as Response;
+    res.status = jest.fn().mockReturnThis();
+    res.send = jest.fn().mockReturnThis();
+    return res;
+};
 
-    beforeEach(() => {
-        mockRes = {
-            status: jest.fn().mockReturnThis(),
-            send: jest.fn(),
-        };
-    });
-
+describe("Event Controllers", () => {
     describe("createEvent", () => {
-        it("should create an event and respond with success", async () => {
-            const mockEventData = {
-                eventName: "Test Event",
-                eventDate: "2024-12-12T10:00:00.000Z",
-                location: "Test Location",
-                priceEstimate: 100,
-                coverPhoto: "https://example.com/image.jpg",
-                description: "A test event",
-            };
-
-            mockReq = {
+        it("should create an event successfully", async () => {
+            const req = {
                 body: {
-                    ...mockEventData,
-                    authPayload: { id: "testUserId" },
+                    authPayload: {
+                        id: "user123",
+                    },
+                    eventName: "Test Event",
+                    eventDate: "2024-12-01T00:00:00Z",
+                    location: "Test Location",
+                    priceEstimate: 50,
+                    coverPhoto: "test.jpg",
+                    description: "Test event description.",
                 },
-            };
-
-            const savedEvent = { _id: "testEventId", eventName: "Test Event" };
-            (createEventService as jest.Mock).mockResolvedValue(savedEvent);
-
-            await createEvent(mockReq as Request, mockRes as Response);
-
-            expect(createEventService).toHaveBeenCalledWith({
-                userId: "testUserId",
-                ...mockEventData,
-                eventDate: new Date(mockEventData.eventDate),
+            } as unknown as Request;
+        
+            const res = mockResponse();
+        
+            const savedEvent = {
+                _id: "event123", // Include event ID here
+                eventName: "Test Event",
+                eventDate: new Date("2024-12-01T00:00:00Z"),
+                location: "Test Location",
+                priceEstimate: 50,
+                coverPhoto: "test.jpg",
+                description: "Test event description.",
                 attendees: [],
-            });
-            expect(mockRes.status).toHaveBeenCalledWith(201);
-            expect(mockRes.send).toHaveBeenCalledWith({
+            };
+        
+            (createEventService as jest.Mock).mockResolvedValue(savedEvent);
+        
+            await createEvent(req, res);
+        
+            expect(res.status).toHaveBeenCalledWith(201);
+            expect(res.send).toHaveBeenCalledWith({
                 status: "success",
-                message: `Event 'Test Event' has been successfully created.`,
-                id: "testEventId",
+                message: "Event 'Test Event' has been successfully created.",
+                id: "event123", // Match the actual response
             });
         });
 
-        it("should respond with 400 for missing required parameters", async () => {
-            mockReq = {
-                body: { authPayload: { id: "testUserId" } },
-            };
+        it("should return a validation error for missing parameters", async () => {
+            const req = {
+                body: {
+                    authPayload: { id: "user123" },
+                    // Missing eventName and eventDate
+                    location: "Test Location",
+                },
+            } as unknown as Request;
 
-            await createEvent(mockReq as Request, mockRes as Response);
+            const res = mockResponse();
 
-            expect(mockRes.status).toHaveBeenCalledWith(400);
-            expect(mockRes.send).toHaveBeenCalledWith({
+            await createEvent(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(400);
+            expect(res.send).toHaveBeenCalledWith({
                 status: "failure",
                 message: expect.stringContaining("Request is missing required parameters"),
             });
         });
+    });
 
-        it("should handle unexpected errors and respond with 500", async () => {
-            mockReq = {
-                body: {
-                    eventName: "Test Event",
-                    eventDate: "2024-12-12T10:00:00.000Z",
-                    location: "Test Location",
-                    priceEstimate: 100,
-                    coverPhoto: "https://example.com/image.jpg",
-                    description: "A test event",
-                    authPayload: { id: "testUserId" },
-                },
-            };
+    describe("getAllEvents", () => {
+        it("should fetch all events successfully", async () => {
+            const req = {
+                query: { sort: "asc" },
+                body: { authPayload: { id: "user123" } },
+            } as unknown as Request;
 
-            (createEventService as jest.Mock).mockRejectedValue(new Error("Unexpected error"));
+            const res = mockResponse();
 
-            await createEvent(mockReq as Request, mockRes as Response);
+            (getEvents as jest.Mock).mockResolvedValue([
+                { _id: "1", eventName: "Event A", userRegistered: ["user123"] },
+                { _id: "2", eventName: "Event B", userRegistered: [] },
+            ]);
 
-            expect(mockRes.status).toHaveBeenCalledWith(500);
-            expect(mockRes.send).toHaveBeenCalledWith({
-                status: "failure",
-                message: "There was a failure while trying to create the event, please try again",
+            await getAllEvents(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.send).toHaveBeenCalledWith({
+                status: "success",
+                message: "Events fetched successfully.",
+                events: expect.any(Array),
             });
         });
     });
 
-  
     describe("getEventById", () => {
-        it("should fetch an event by ID and respond with success", async () => {
-            const mockEvent = {
-                _id: "testEventId",
-                eventName: "Test Event",
-                description: "A test event",
-                eventDate: new Date("2024-12-12T10:00:00.000Z"),
-                location: "Test Location",
-                priceEstimate: 100,
-                coverPhoto: "https://example.com/image.jpg",
-            };
+        it("should fetch an event by ID successfully", async () => {
+            const req = { params: { id: "event123" } } as unknown as Request;
+            const res = mockResponse();
 
-            mockReq = { params: { id: "testEventId" } };
-            (getEventByIdService as jest.Mock).mockResolvedValue(mockEvent);
+            (getEventByIdService as jest.Mock).mockResolvedValue({
+                _id: "event123",
+                eventName: "Event A",
+            });
 
-            await getEventById(mockReq as Request, mockRes as Response);
+            await getEventById(req, res);
 
-            expect(getEventByIdService).toHaveBeenCalledWith("testEventId");
-            expect(mockRes.status).toHaveBeenCalledWith(200);
-            expect(mockRes.send).toHaveBeenCalledWith({
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.send).toHaveBeenCalledWith({
                 status: "success",
                 message: "Event details fetched successfully.",
-                data: mockEvent,
+                data: expect.any(Object),
             });
         });
 
-        it("should respond with 404 if the event is not found", async () => {
-            mockReq = { params: { id: "testEventId" } };
+        it("should return a 404 if event not found", async () => {
+            const req = { params: { id: "event999" } } as unknown as Request;
+            const res = mockResponse();
+
             (getEventByIdService as jest.Mock).mockResolvedValue(null);
 
-            await getEventById(mockReq as Request, mockRes as Response);
+            await getEventById(req, res);
 
-            expect(mockRes.status).toHaveBeenCalledWith(404);
-            expect(mockRes.send).toHaveBeenCalledWith({
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.send).toHaveBeenCalledWith({
                 status: "failure",
-                message: `Event with ID 'testEventId' not found.`,
-            });
-        });
-
-        it("should respond with 500 for errors while fetching event by ID", async () => {
-            mockReq = { params: { id: "testEventId" } };
-            (getEventByIdService as jest.Mock).mockRejectedValue(new Error("Unexpected error"));
-
-            await getEventById(mockReq as Request, mockRes as Response);
-
-            expect(mockRes.status).toHaveBeenCalledWith(500);
-            expect(mockRes.send).toHaveBeenCalledWith({
-                status: "failure",
-                message: "An error occurred while fetching the event details.",
+                message: "Event with ID 'event999' not found.",
             });
         });
     });

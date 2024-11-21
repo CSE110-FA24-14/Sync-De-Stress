@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { BaseResponseInterface,GetEventResponseInterface, RegisterEventResponseInterface } from "../shared/interface/responseInterface";
 import { createEventService, getEventByIdService } from "../services/events";
 
+
 import { getEvents, registerOrUnregisterEvent } from "../services/events";
 import { register } from "./user";
 
