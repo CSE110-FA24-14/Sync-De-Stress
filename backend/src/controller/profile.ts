@@ -1,12 +1,40 @@
 import { Request, Response } from "express";
 import { BaseResponseInterface } from "../shared/interface/responseInterface";
 import { ProfileInterface } from "../shared/interface/modelInterface";
-import { createProfileService, updateProfileService } from "../services/profile";
+
+import { createProfileService, updateProfileService, getProfileService} from "../services/profile";
 
 // Get user profile
 export async function getProfile(req: Request, res: Response) {
-    // Logic for fetching user profile
-    res.status(200).json({ message: 'User profile data' });
+    try {
+        // Extract user ID from the request (assuming user ID is set in req.body.authPayload)
+        const authPayload = req.body.authPayload;
+        const userId = authPayload.id;
+
+        // Call the service to get the profile
+        const profileData = await getProfileService(userId);
+
+        // Handle the case where no profile was found
+        if (!profileData) {
+            return res.status(404).send({
+                status: 'failure',
+                message: 'Profile not found',
+            });
+        }
+
+        // Success response
+        return res.status(200).send({
+            status: 'success',
+            data: profileData,
+        });
+    } catch (err: any) {
+        // Error response
+        console.error('GetProfileController Error:', err);
+        return res.status(500).send({
+            status: 'failure',
+            message: 'There was a failure while trying to retrieve the profile, please try again',
+        });
+    }
 }
 
 // Create a new profile
@@ -131,7 +159,6 @@ export async function editProfile(req: Request, res: Response) {
             description: req.body.description,
         };
 
-        // Validate input data (simplified example, you may have more comprehensive validation logic)
         if (!userId || typeof userId !== 'string' || !updatedProfileData.username) {
             response = {
                 status: "failure",
@@ -156,6 +183,7 @@ export async function editProfile(req: Request, res: Response) {
         response = {
             status: "success",
             message: `Profile for userId ${userId} has been successfully updated`,
+
         };
         return res.status(200).send(response);
 
