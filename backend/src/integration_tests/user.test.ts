@@ -47,17 +47,19 @@ describe('Authentication Integration Tests', () => {
     expect(response.status).toBe(200);
     expect(response.body.status).toBe('success');
     expect(response.body.message).toContain('User with email test@example.com has been successfully saved');
-
-    response = await request(app).post('/register').send({
+    await setTimeout(async () => {
+      response = await request(app).post('/register').send({
         email: 'test@example.com',
         password: 'password123',
-    });
+      });
 
-    const user = await UserModel.find({ email: 'test@example.com' })
-    expect(response.status).toBe(409);
-    expect(response.body.status).toBe('failure');
-    expect(response.body.message).toContain('the email provided was already used');
-    expect(user.length).toBe(1);
+        const user = await UserModel.find({ email: 'test@example.com' })
+        expect(user.length).toBe(1);
+        expect(response.status).toBe(409);
+        expect(response.body.status).toBe('failure');
+        expect(response.body.message).toContain('the email provided was already used');
+    }, 1000)
+    
 
   });
 
