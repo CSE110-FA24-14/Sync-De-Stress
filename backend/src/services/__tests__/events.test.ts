@@ -1,59 +1,85 @@
-// src/services/__tests__/events.test.ts
+import { createEventService, getEventByIdService } from "../events";
+import EventModel from "../../models/events";
 
-import { createEventService } from '../events';
-import EventModel from '../../models/events';
+jest.mock("../../models/events");
 
-jest.mock('../../models/events');
-
-describe('createEventService', () => {
-  let mockSave: jest.Mock;
-
-  beforeEach(() => {
+describe("Event Service Tests", () => {
+  afterEach(() => {
     jest.clearAllMocks();
-    mockSave = EventModel.prototype.save as jest.Mock;
   });
 
-  it('should successfully create and return a new event', async () => {
-    const eventData = {
-      eventName: 'Test Event',
-      description: 'This is a test event',
-      eventDate: new Date('2024-12-12T10:00:00Z'),
-      location: 'Test Location',
-      priceEstimate: 100,
-      coverPhoto: 'https://example.com/image.jpg',
-      userRegistered: [],
-    };
+  describe("createEventService", () => {
+    it("should create an event successfully", async () => {
+      const eventData = {
+        eventName: "Sample Event",
+        eventDate: new Date("2023-12-01T10:00:00.000Z"),
+        location: "New York",
+        priceEstimate: 100,
+        coverPhoto: "photo.jpg",
+        description: "This is a sample event",
+        attendees: [],
+      };
 
-    const savedEvent = {
-      _id: 'event123',
-      ...eventData,
-    };
+      const mockEvent = {
+        ...eventData,
+        _id: "63e2d2f123456789abcdef01",
+      };
 
-    mockSave.mockResolvedValue(savedEvent);
+      (EventModel.prototype.save as jest.Mock).mockResolvedValue(mockEvent);
 
-    const result = await createEventService(eventData);
+      const result = await createEventService(eventData);
 
-    expect(EventModel).toHaveBeenCalledWith(eventData);
-    expect(mockSave).toHaveBeenCalled();
-    expect(result).toEqual(savedEvent);
+      expect(EventModel).toHaveBeenCalledWith(eventData);
+      expect(result).toEqual(mockEvent);
+    });
+
+    it("should throw a validation error when required fields are missing", async () => {
+      const invalidEventData = {
+        location: "New York",
+      };
+
+      const validationError = {
+        name: "ValidationError",
+        errors: {
+          eventName: { message: "Event name is required" },
+          eventDate: { message: "Event date is required" },
+        },
+      };
+
+      (EventModel.prototype.save as jest.Mock).mockRejectedValue(validationError);
+
+      await expect(createEventService(invalidEventData)).rejects.toEqual(validationError);
+    });
   });
 
-  it('should throw an error when saving fails', async () => {
-    const eventData = {
-      eventName: 'Test Event',
-      description: 'This is a test event',
-      eventDate: new Date('2024-12-12T10:00:00Z'),
-      location: 'Test Location',
-      priceEstimate: 100,
-      coverPhoto: 'https://example.com/image.jpg',
-      userRegistered: [],
-    };
+  describe("getEventByIdService", () => {
+    it("should return the event for a valid ID", async () => {
+      const mockEvent = {
+        _id: "63e2d2f123456789abcdef01",
+        eventName: "Sample Event",
+        eventDate: new Date("2023-12-01T10:00:00.000Z"),
+        location: "New York",
+        priceEstimate: 100,
+        coverPhoto: "photo.jpg",
+        description: "This is a sample event",
+        attendees: [],
+      };
 
-    const mockError = new Error('Failed to create event');
+      (EventModel.findById as jest.Mock).mockResolvedValue(mockEvent);
 
-    mockSave.mockRejectedValue(mockError);
+      const result = await getEventByIdService("63e2d2f123456789abcdef01");
 
-    await expect(createEventService(eventData)).rejects.toThrow('Failed to create event');
-    expect(mockSave).toHaveBeenCalled();
+      expect(EventModel.findById).toHaveBeenCalledWith("63e2d2f123456789abcdef01");
+      expect(result).toEqual(mockEvent);
+    });
+
+    it("should return null for a non-existent ID", async () => {
+      (EventModel.findById as jest.Mock).mockResolvedValue(null);
+
+      const result = await getEventByIdService("nonexistent-id");
+
+      expect(EventModel.findById).toHaveBeenCalledWith("nonexistent-id");
+      expect(result).toBeNull();
+    });
   });
 });
