@@ -33,6 +33,7 @@ export interface ProfileInterface extends Document {
 }
 
 export interface EventInterface extends Document {
+  eventId: string;
   eventName: string; // Event name
   description?: string; // Optional event description
   eventDate: Date; //Event Date and Time

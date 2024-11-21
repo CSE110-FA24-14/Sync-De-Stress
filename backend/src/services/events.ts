@@ -2,17 +2,22 @@ import EventModel from '../models/events';
 
 export async function createEventService(eventData: any) {
     try {
-        // Create a new instance of the Event model with the provided data
         const newEvent = new EventModel(eventData);
-
-        // Save the new event to the database
-        const savedEvent = await newEvent.save();
-
-        // Return the saved event
-        return savedEvent;
+        return await newEvent.save();
     } catch (error) {
         console.error("Error creating event:", error);
         throw new Error("Failed to create event");
+    }
+}
+
+export async function getEventByIdService(eventId: string) {
+    try {
+        // Fetch the event by its ID
+        const event = await EventModel.findById(eventId);
+        return event; // Return the event document or null if not found
+    } catch (error) {
+        console.error("Error fetching event by ID:", error);
+        throw new Error("Failed to fetch event by ID");
     }
 }
 
