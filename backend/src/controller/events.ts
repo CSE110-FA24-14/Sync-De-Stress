@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import { BaseResponseInterface,GetEventResponseInterface, RegisterEventResponseInterface } from "../shared/interface/responseInterface";
 import { createEventService, getEventByIdService } from "../services/events";
 
-import { BaseResponseInterface, GetEventResponseInterface, RegisterEventResponseInterface } from "../shared/interface/responseInterface";
 import { getEvents, registerOrUnregisterEvent } from "../services/events";
 import { register } from "./user";
 
@@ -217,6 +216,7 @@ export async function registerForEvent(req: Request, res: Response) {
             res.status(500).send(response);
         }
     }
+}
 
 export async function getEventById(req: Request, res: Response) {
     let response: BaseResponseInterface;
