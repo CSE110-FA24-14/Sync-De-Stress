@@ -6,8 +6,14 @@ export async function createEventService(eventData: any) {
     try {
         const newEvent = new EventModel(eventData);
         return await newEvent.save();
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error creating event:", error);
+
+        // Check if error is a validation error and rethrow it
+        if (error.name === "ValidationError") {
+            throw error;
+        }
+
         throw new Error("Failed to create event");
     }
 }

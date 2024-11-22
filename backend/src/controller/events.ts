@@ -83,61 +83,55 @@ export async function getSimilarEvents(req: Request, res: Response) {
     res.status(200).json({ message: "List of similar events" });
 }
 
-// Create a new event
 export async function createEvent(req: Request, res: Response) {
-    let response: BaseResponseInterface;
+    let response;
 
-    const requiredParams = [
-        "eventName",
-        "eventDate",
-        "location",
-        "priceEstimate",
-        "coverPhoto",
-        "description"
-    ];
+    // Define required parameters
+    const requiredParams = ["eventName", "eventDate", "location", "priceEstimate", "coverPhoto", "description"];
 
-    // Check if all required parameters are present
-    const containsRequiredParams = requiredParams.every(param => Object.keys(req.body).includes(param));
-    if (!containsRequiredParams) {
+    // Check for missing parameters
+    const missingParams = requiredParams.filter(param => !req.body[param]);
+
+    if (missingParams.length > 0) {
         response = {
             status: "failure",
-            message: `Request is missing required parameters: ${requiredParams.join(", ")}`
+            message: `Validation Error: Missing required parameters: ${missingParams.join(", ")}.`,
         };
         return res.status(400).send(response);
     }
 
     try {
-        // Prepare event data
+        // Extract the authenticated user ID
         const authPayload = req.body.authPayload;
         const eventData = {
-            userId: authPayload.id, // Extract user ID from auth payload
+            userId: authPayload.id,
             eventName: req.body.eventName,
             eventDate: new Date(req.body.eventDate),
             location: req.body.location,
             priceEstimate: req.body.priceEstimate,
             coverPhoto: req.body.coverPhoto,
             description: req.body.description,
-            attendees: [] // Default to empty array
+            attendees: [],
         };
 
-        // Call the service to create the event
+        // Create the event via the service
         const savedEvent = await createEventService(eventData);
 
-        // Return success response, including the event ID
+        // Return a success response
         response = {
             status: "success",
             message: `Event '${savedEvent.eventName}' has been successfully created.`,
-            id: savedEvent._id // Include event ID here
+            id: savedEvent._id,
         };
         return res.status(201).send(response);
 
     } catch (err: any) {
-        // Handle validation errors
-        if (err?.name === "ValidationError") {
+        // Handle validation errors (e.g., database-level validation)
+        if (err.name === "ValidationError") {
             const messages = Object.values(err.errors).map((val: any) => val.message);
             response = {
                 status: "failure",
-                message: `Validation Error: ${messages.join(", ")}`
+                message: `Validation Error: ${messages.join(", ")}`,
             };
             return res.status(400).send(response);
         }
@@ -145,7 +139,7 @@ export async function createEvent(req: Request, res: Response) {
         // Handle unexpected errors
         response = {
             status: "failure",
-            message: "There was a failure while trying to create the event, please try again"
+            message: "There was a failure while trying to create the event, please try again",
         };
         console.error("CreateEventController Error:", err);
         return res.status(500).send(response);

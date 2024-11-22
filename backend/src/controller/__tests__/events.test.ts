@@ -16,9 +16,7 @@ describe("Event Controllers", () => {
         it("should create an event successfully", async () => {
             const req = {
                 body: {
-                    authPayload: {
-                        id: "user123",
-                    },
+                    authPayload: { id: "user123" },
                     eventName: "Test Event",
                     eventDate: "2024-12-01T00:00:00Z",
                     location: "Test Location",
@@ -27,11 +25,11 @@ describe("Event Controllers", () => {
                     description: "Test event description.",
                 },
             } as unknown as Request;
-        
+    
             const res = mockResponse();
-        
+    
             const savedEvent = {
-                _id: "event123", // Include event ID here
+                _id: "event123",
                 eventName: "Test Event",
                 eventDate: new Date("2024-12-01T00:00:00Z"),
                 location: "Test Location",
@@ -40,36 +38,67 @@ describe("Event Controllers", () => {
                 description: "Test event description.",
                 attendees: [],
             };
-        
+    
             (createEventService as jest.Mock).mockResolvedValue(savedEvent);
-        
+    
             await createEvent(req, res);
-        
+    
             expect(res.status).toHaveBeenCalledWith(201);
             expect(res.send).toHaveBeenCalledWith({
                 status: "success",
                 message: "Event 'Test Event' has been successfully created.",
-                id: "event123", // Match the actual response
+                id: "event123",
             });
         });
-
+    
         it("should return a validation error for missing parameters", async () => {
             const req = {
                 body: {
                     authPayload: { id: "user123" },
-                    // Missing eventName and eventDate
-                    location: "Test Location",
+                    // Missing eventName
+                    eventDate: "2024-12-01T00:00:00Z",
+                    location: "San Diego Convention Center",
+                    priceEstimate: 100,
+                    coverPhoto: "https://example.com/sample.jpg",
+                    description: "An amazing event to attend.",
                 },
             } as unknown as Request;
-
+        
             const res = mockResponse();
-
+        
             await createEvent(req, res);
-
+        
             expect(res.status).toHaveBeenCalledWith(400);
             expect(res.send).toHaveBeenCalledWith({
                 status: "failure",
-                message: expect.stringContaining("Request is missing required parameters"),
+                message: "Validation Error: Missing required parameters: eventName.",
+            });
+        });
+        
+    
+        it("should handle unexpected errors gracefully", async () => {
+            const req = {
+                body: {
+                    authPayload: { id: "user123" },
+                    eventName: "Test Event",
+                    eventDate: "2024-12-01T00:00:00Z",
+                    location: "Test Location",
+                    priceEstimate: 50,
+                    coverPhoto: "test.jpg",
+                    description: "Test event description.",
+                },
+            } as unknown as Request;
+    
+            const res = mockResponse();
+    
+            (createEventService as jest.Mock).mockRejectedValue(new Error("Unexpected error"));
+    
+            await createEvent(req, res);
+    
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.send).toHaveBeenCalledWith({
+                status: "failure",
+                message: "There was a failure while trying to create the event, please try again",
             });
         });
     });
@@ -95,6 +124,26 @@ describe("Event Controllers", () => {
                 status: "success",
                 message: "Events fetched successfully.",
                 events: expect.any(Array),
+            });
+        });
+
+        it("should return an empty array if no events are found", async () => {
+            const req = {
+                query: { sort: "asc" },
+                body: { authPayload: { id: "user123" } },
+            } as unknown as Request;
+
+            const res = mockResponse();
+
+            (getEvents as jest.Mock).mockResolvedValue([]);
+
+            await getAllEvents(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.send).toHaveBeenCalledWith({
+                status: "success",
+                message: "Events fetched successfully.",
+                events: [],
             });
         });
     });
@@ -131,6 +180,21 @@ describe("Event Controllers", () => {
             expect(res.send).toHaveBeenCalledWith({
                 status: "failure",
                 message: "Event with ID 'event999' not found.",
+            });
+        });
+
+        it("should handle unexpected errors gracefully", async () => {
+            const req = { params: { id: "event123" } } as unknown as Request;
+            const res = mockResponse();
+
+            (getEventByIdService as jest.Mock).mockRejectedValue(new Error("Unexpected error"));
+
+            await getEventById(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.send).toHaveBeenCalledWith({
+                status: "failure",
+                message: "An error occurred while fetching the event details.",
             });
         });
     });
