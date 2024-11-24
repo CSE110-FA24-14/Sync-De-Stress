@@ -42,10 +42,13 @@ export interface EventInterface extends Document {
   userRegistered: string[];
 }
 
+export const NOTIFICATION_MATCH_REQUEST = 0;
+export const NOTIFICATION_MATCHED = 1;
+
+
 export interface NotificationInterface extends Document {
-  message: string; // Notification message (e.g., "Sarah has added you as a friend!")
-  type: string; // Type of notification (e.g., "friend_request", "event_update", "match")
-  icon?: string; // Optional icon or image URL
-  actionLink?: string; // Optional action link (e.g., "Click here to accept")
-  
+  userId: string; // userId of the user that this notification belongs to
+  type: number; // Type of notification (e.g., "friend_request", "event_update", "match")
+  date: Date; // Date time for notification creation
+  targetId: string; // userId of the user that is a potential match.
 }
