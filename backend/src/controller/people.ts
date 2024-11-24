@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { BaseResponseInterface, GetRecommendationResponseInterface } from '../shared/interface/responseInterface';
 import { getRecommendedProfiles } from '../services/profile';
-import { sendFriendRequest } from "../services/people";
+import { respondToFriendRequest, sendFriendRequest } from "../services/people";
 
 // Get list of recommended people
 export async function getRecommendations(req: Request, res: Response) {
@@ -88,6 +88,65 @@ export async function matchPeople(req: Request, res: Response) {
             response = {
                 status: "failure",
                 message: "Target user profile not found."
+            };
+            res.status(404).send(response);
+        } else {
+            response = {
+                status: "failure",
+                message: "An error occurred while processing the request."
+            };
+            console.error(err);
+            res.status(500).send(response);
+        }
+    }
+}
+
+export async function respondToMatchRequest(req: Request, res: Response) {
+    let response: BaseResponseInterface;
+
+    const requiredParams = ["requesterUserId", "accept"];
+    const containsRequiredParams = requiredParams.every(param => Object.keys(req.body).includes(param));
+
+    if (!containsRequiredParams) {
+        response = {
+            status: "failure",
+            message: `Request is missing key parameters: ${requiredParams.join(", ")}`
+        };
+        res.status(400).send(response);
+        return;
+    }
+
+    try {
+        const recipientUserId = req.body.authPayload.id; // The user responding to the friend request
+        const requesterUserId = req.body.requesterUserId; // The user who sent the friend request
+        const accept = req.body.accept; // Boolean value representing accepting or rejecting
+
+        // Call the service function to respond to the friend request
+        await respondToFriendRequest(recipientUserId, requesterUserId, accept);
+
+        // Construct success response
+        response = {
+            status: "success",
+            message: accept ? "Friend request accepted." : "Friend request rejected."
+        };
+        res.status(200).send(response);
+    } catch (err: any) {
+        if (err.message === 'FriendRequestNotFound') {
+            response = {
+                status: "failure",
+                message: "Friend request not found."
+            };
+            res.status(404).send(response);
+        } else if (err.message === 'ProfileNotFound') {
+            response = {
+                status: "failure",
+                message: "User profile not found."
+            };
+            res.status(404).send(response);
+        } else if (err.message === 'RequesterProfileNotFound') {
+            response = {
+                status: "failure",
+                message: "Requester user profile not found."
             };
             res.status(404).send(response);
         } else {
