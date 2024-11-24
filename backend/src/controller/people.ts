@@ -1,9 +1,44 @@
 import { Request, Response } from "express";
+import { GetRecommendationResponseInterface } from '../shared/interface/responseInterface';
+import { getRecommendedProfiles } from '../services/profile';
 
 // Get list of recommended people
 export async function getRecommendations(req: Request, res: Response) {
-    // Logic for fetching recommendations
-    res.status(200).json({ message: 'List of recommended people' });
+    try {
+        // Fetch userId from req.body.authPayload.id
+        const userId = req.body.authPayload.id;
+    
+        // Call service function to get recommendations
+        const recommendedProfiles = await getRecommendedProfiles(userId);
+    
+        // Construct success response
+        const response: GetRecommendationResponseInterface = {
+          status: "success",
+          message: "Recommendations fetched successfully.",
+          recommendations: recommendedProfiles,
+        };
+        res.status(200).send(response);
+      } catch (err: any) {
+        let response: GetRecommendationResponseInterface;
+        if (err.message === 'ProfileNotFound') {
+          response = {
+            status: "failure",
+            message: "User profile not found.",
+            recommendations: [],
+          };
+          res.status(404).send(response);
+          return;
+        }
+    
+        // Handle general errors
+        response = {
+          status: "failure",
+          message: "An error occurred while fetching recommendations.",
+          recommendations: [],
+        };
+        console.error(err);
+        res.status(500).send(response);
+      }
 }
 
 // Send a match request
