@@ -11,10 +11,8 @@ const CreateProfile: React.FC = () => {
   const [contact, setContact] = useState('');
   const [songs, setSongs] = useState('');
   const [singers, setSingers] = useState('');
-
   const [profileImage, setProfileImage] = useState<File | null>(null); 
   const [previewImage, setPreviewImage] = useState<string | null>(null); 
-
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
@@ -22,8 +20,8 @@ const CreateProfile: React.FC = () => {
   const handleCreateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setError(''); // Clear errors
-    setSuccess(''); // clear success messages
+    setError(''); 
+    setSuccess(''); 
 
     try {
         const response = await create_profile(name, bio, classes, hobby, contact, songs, singers);
@@ -58,22 +56,19 @@ const CreateProfile: React.FC = () => {
         ) : (
 
         <div className="ProfileImage-placeholder">
-          <span>Profile Image</span>
-          {/* <button className="ProfileImage-button">+</button> */}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
         </div>
       )}
 
-       <label htmlFor="profileImageUpload" className="ProfileImage-button">
-          Upload
-        </label>
+       <label htmlFor="profileImageUpload" className="ProfileImage-button"> + </label>
         <input
           id="profileImageUpload"
           type="file"
           accept="image/*"
           onChange={handleImageChange}
           style={{ display: 'none' }}
-
-          
         />
       </div>
 
