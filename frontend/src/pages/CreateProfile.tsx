@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../CreateProfile.css';
+import '../styles/CreateProfile.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { create_profile } from '../services/authService';
 

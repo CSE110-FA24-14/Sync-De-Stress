@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { EventInterface } from '../../../backend/src/shared/interface/modelInterface';
 
-const API_BASE_URL = 'http://localhost:3202'; 
+const API_BASE_URL = 'http://localhost:3203'; 
 
 
 //SIGN-UP
@@ -39,14 +39,15 @@ export const create_profile = async (name: string, bio: string, classes: string,
 
 //CREATE EVENTS
 export const createEvent = async (eventData: {
-  title: string;
-  date: string;
-  time: string;
-  location: string;
-  attendees: number;
+  eventName: string; // Event name
+  description?: string; // Optional event description
+  eventDate: Date; //Event Date and Time
+  location: string; // Event location
+  priceEstimate?: number; // Optional price estimate
+  coverPhoto?: string;
 }) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/api/events/create`, eventData);
+    const response = await axios.post(`${API_BASE_URL}/events`, eventData);
     return response.data; // Return the created event
   } catch (error: any) {
     throw error.response?.data || error.message;
