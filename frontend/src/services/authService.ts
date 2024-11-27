@@ -26,6 +26,17 @@ export const login = async (email: string, password: string) => {
   }
 };
 
+//CREATE-SUCCESS
+export const create_profile = async (name: string, bio: string, classes: string, hobby: string, contact: string, songs: string, singers: string) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/profile`, {name, bio, classes, hobby, contact, songs, singers});
+    console.log(response.data);
+    return response.data;
+  } catch (error: any) {
+    throw error.response?.data || error.message;
+  }
+};
+
 //CREATE EVENTS
 export const createEvent = async (eventData: {
   title: string;
