@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { EventInterface } from '../../../backend/src/shared/interface/modelInterface';
 
-const API_BASE_URL = 'http://localhost:3202'; 
+const API_BASE_URL = 'http://localhost:3203'; 
 
 
 //SIGN-UP
