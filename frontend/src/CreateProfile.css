@@ -36,23 +36,23 @@
 }
 
 .ProfileImage-preview {
-  width: 100%;
-  height: 100%;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border-radius: 50%;
 }
 
 .ProfileImage-button {
   position: absolute;
-  bottom: -10px; 
-  right: -10px;
+  bottom: -9px; 
+  right: 139px;
   background-color: #61dafb;
   color: white;
   border: none;
   border-radius: 50%;
   width: 30px;
   height: 30px;
-  font-size: 16px;
+  font-size: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,7 +63,6 @@
 .ProfileImage-button:hover {
   background-color: #21a1f1;
 }
-
 
 input[type="file"] {
   display: none; 
