@@ -27,7 +27,7 @@ const CreateProfile: React.FC = () => {
         const response = await create_profile(name, bio, classes, hobby, contact, songs, singers);
         console.log(response);
         setSuccess('profile successfully created');
-        navigate('/Profile');
+        navigate('/home');
       } catch (err: any) {
         console.error('Error during profile creation:', err); // Log the full error
         const errorMessage = err.response?.data?.message || 'Failed to create a profile';
