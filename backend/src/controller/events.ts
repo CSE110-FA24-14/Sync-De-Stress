@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { BaseResponseInterface,GetEventResponseInterface, RegisterEventResponseInterface } from "../shared/interface/responseInterface";
+import { BaseResponseInterface, CreateEventInterface, GetEventResponseInterface, RegisterEventResponseInterface } from "../shared/interface/responseInterface";
 import { createEventService, getEventByIdService } from "../services/events";
 
 
@@ -84,7 +84,7 @@ export async function getSimilarEvents(req: Request, res: Response) {
 }
 
 export async function createEvent(req: Request, res: Response) {
-    let response;
+    let response: CreateEventInterface;
 
     // Define required parameters
     const requiredParams = ["eventName", "eventDate", "location", "priceEstimate", "coverPhoto", "description"];
@@ -214,7 +214,7 @@ export async function registerForEvent(req: Request, res: Response) {
 }
 
 export async function getEventById(req: Request, res: Response) {
-    let response: BaseResponseInterface;
+    let response: CreateEventInterface;
 
     try {
         const { id } = req.params; // Extract event ID from route parameters

@@ -1,6 +1,11 @@
 export interface BaseResponseInterface {
     status: String;
     message: String;
+}
+
+export interface CreateEventInterface extends BaseResponseInterface{
+    status: String;
+    message: String;
     id?: String;
     data?: any;
 }
