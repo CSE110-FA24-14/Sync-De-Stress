@@ -10,7 +10,7 @@ import router from "./api/router";
 dotenv.config({path: path.join(__dirname, "../.env")});
 
 const app: Application = express();
-const PORT: Number = Number(process.env.port) || 3202;
+const PORT: Number = Number(process.env.port) || 3203;
 
 // Setup middlewares
 app.use(express.json());

@@ -15,6 +15,7 @@ export interface AuthInterface extends Document {
 }
 
 export interface ProfileInterface extends Document {
+    userId: string;
     username: string; // Field for username
     description?: string; // Optional field for a description
     dateOfBirth: Date; // Date
@@ -28,6 +29,7 @@ export interface ProfileInterface extends Document {
     contact: string; // Phone number, instagram, email
     friend: string[]; // Array of friend IDs as strings
     friend_requested: string[]; // Array of requested friend IDs as strings
+    event_registered: string[];
 }
 
 export interface EventInterface extends Document {
@@ -37,12 +39,16 @@ export interface EventInterface extends Document {
   location: string; // Event location
   priceEstimate?: number; // Optional price estimate
   coverPhoto?: string; // Optional cover photo (e.g., URL or binary data)
+  userRegistered: string[];
 }
 
+export const NOTIFICATION_MATCH_REQUEST = 0;
+export const NOTIFICATION_MATCHED = 1;
+
+
 export interface NotificationInterface extends Document {
-  message: string; // Notification message (e.g., "Sarah has added you as a friend!")
-  type: string; // Type of notification (e.g., "friend_request", "event_update", "match")
-  icon?: string; // Optional icon or image URL
-  actionLink?: string; // Optional action link (e.g., "Click here to accept")
-  
+  userId: string; // userId of the user that this notification belongs to
+  type: number; // Type of notification (e.g., "friend_request", "event_update", "match")
+  date: Date; // Date time for notification creation
+  targetId: string; // userId of the user that is a potential match.
 }
