@@ -1,0 +1,36 @@
+.profile-container {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 2px solid black;
+    border-radius: 20px;
+    background-color: #ece6f0;
+    margin: 20px auto 65px auto; /* added bottom margin of 150px */
+}
+
+h1 {
+    text-align: center;
+    color: black;
+}
+
+p {
+    margin: 10px 0;
+}
+
+.media-controls {
+    position: fixed;
+    bottom: 115px;
+    left: 0;
+    right: 0;
+    display: flex; 
+    justify-content: space-evenly;
+    background-color: #fef6fe;
+}
+
+
+button {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+}
