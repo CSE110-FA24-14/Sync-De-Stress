@@ -1,5 +1,6 @@
 import EventModel from '../models/events';
 import ProfileModel from '../models/profile';
+import mongoose from 'mongoose';
 
 
 export async function createEventService(eventData: any) {
@@ -80,3 +81,75 @@ export async function registerOrUnregisterEvent(userId: string, eventId: string)
     }
 }
 
+export async function getRegisteredEventsService(userId: string) {
+    // Fetch the user's profile
+    const userProfile = await ProfileModel.findOne({ userId });
+    if (!userProfile) {
+        throw new Error("ProfileNotFound");
+    }
+
+    const registeredEventIds = (userProfile.event_registered || []).filter(id => typeof id === "string");
+return registeredEventIds;
+}
+
+export async function getSimilarEventsService(userId: string): Promise<any[]> {
+    try {
+        // Fetch the user's profile to get registered events
+        const userProfile = await ProfileModel.findOne({ userId }).lean();
+        if (!userProfile) {
+            throw new Error("ProfileNotFound");
+        }
+
+        const registeredEventIds = userProfile.event_registered;
+
+        // Fetch all events
+        const allEvents = await EventModel.find({}).lean();
+
+        if (allEvents.length === 0) {
+            return []; // Return an empty array if no events exist
+        }
+
+        // Identify unregistered events
+        const unregisteredEvents = allEvents.filter(
+            (event) => !registeredEventIds.includes(event._id.toString())
+        );
+
+        if (registeredEventIds.length === 0 || unregisteredEvents.length === 0) {
+            // If user hasn't registered for any events or no unregistered events are available
+            return unregisteredEvents.slice(0, 3); // Return up to 3 random unregistered events
+        }
+
+        // Choose the first registered event as the base for similarity comparison
+        const baseEventId = registeredEventIds[0];
+        const baseEvent = allEvents.find((event) => event._id.toString() === baseEventId);
+
+        if (!baseEvent) {
+            throw new Error("BaseEventNotFound");
+        }
+
+        // Find similar events from unregistered events (based on date ±3 days)
+        const baseDate = new Date(baseEvent.eventDate);
+
+        const similarEvents = unregisteredEvents.filter((event) => {
+            const eventDate = new Date(event.eventDate);
+            return (
+                eventDate >= new Date(baseDate.getTime() - 3 * 24 * 60 * 60 * 1000) &&
+                eventDate <= new Date(baseDate.getTime() + 3 * 24 * 60 * 60 * 1000)
+            );
+        });
+
+        // If no similar events, return up to 3 random unregistered events
+        if (similarEvents.length === 0) {
+            const randomUnregisteredEvents = unregisteredEvents
+                .sort(() => Math.random() - 0.5) // Shuffle the unregistered events
+                .slice(0, 3); // Select up to 3 random events
+            return randomUnregisteredEvents;
+        }
+
+        // Return up to 3 similar events
+        return similarEvents.slice(0, 3);
+    } catch (error) {
+        console.error("Error fetching similar unregistered events:", error);
+        throw new Error("Failed to fetch similar unregistered events.");
+    }
+}

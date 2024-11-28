@@ -10,6 +10,13 @@ export interface CreateEventInterface extends BaseResponseInterface{
     data?: any;
 }
 
+export interface GetEventRegisteredResponseInterface extends BaseResponseInterface{
+    status: String;
+    message: String;
+    id?: String;
+    data?: any;
+}
+
 export interface LoginResponseInterface extends BaseResponseInterface {
     email?: String;
     token?: String;
