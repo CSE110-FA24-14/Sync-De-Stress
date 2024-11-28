@@ -7,6 +7,7 @@ import People from './pages/People';
 import Profile from './pages/Profile';
 import NavBar from './NavBar';
 import CreateEvent from './pages/CreateEvent';
+import Notifications from './pages/Notifications';
 import './App.css';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/home" element={<Events />} />
           <Route path="/createevent" element={<CreateEvent />} />
           <Route path="/people" element={<People />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>

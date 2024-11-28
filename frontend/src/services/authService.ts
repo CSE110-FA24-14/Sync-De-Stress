@@ -26,7 +26,7 @@ export const login = async (email: string, password: string) => {
   }
 };
 
-//CREATE-SUCCESS
+//CREATE PROFILE
 export const create_profile = async (name: string, bio: string, classes: string, hobby: string, contact: string, songs: string, singers: string) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/profile`, {name, bio, classes, hobby, contact, songs, singers});
@@ -36,6 +36,62 @@ export const create_profile = async (name: string, bio: string, classes: string,
     throw error.response?.data || error.message;
   }
 };
+
+
+//FETCH NOTIFICATIONS
+
+export interface NotificationInterface {
+  id: string;
+  title: string;
+  message: string;
+  icon?: string;
+  status: boolean; // True for ✔ (read), false for + (unread)
+}
+export const fetchNotifications = async (): Promise<NotificationInterface[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          id: '1',
+          title: 'Sarah Doe',
+          message: 'Sarah has added you as a friend! Click here to accept.',
+          icon: '/user-icon.png',
+          status: false,
+        },
+        {
+          id: '2',
+          title: 'Jane Doe’s Event Canceled',
+          message: 'Due to weather, we’re canceling Jane’s event.',
+          icon: '/event-icon.png',
+          status: true,
+        },
+        {
+          id: '3',
+          title: 'Batman',
+          message: 'You and Batman have matched! Click to view profile.',
+          icon: '/batman-icon.png',
+          status: true,
+        },
+      ]);
+    }, 1000);
+  });
+};
+
+export const updateNotificationStatus = async (id: string, status: boolean): Promise<NotificationInterface> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        id,
+        title: `Updated Notification ${id}`,
+        message: `Status updated to ${status ? 'read' : 'unread'}.`,
+        icon: '/placeholder-icon.png',
+        status,
+      });
+    }, 500);
+  });
+};
+
+
 
 //CREATE EVENTS
 export const createEvent = async (eventData: {
@@ -119,6 +175,7 @@ export const rsvpEvent = async (eventId: string, isRsvped: boolean): Promise<Dum
 };
 
 /*
+
 // FETCH ALL EVENTS (for events list)
 export const fetchEvents = async () => {
   try {
@@ -128,6 +185,7 @@ export const fetchEvents = async () => {
     throw error.response?.data || error.message;
   }
 };
+
 
 // RSVP TO AN EVENT
 export const rsvpEvent = async (eventId: string, isRsvped: boolean) => {
