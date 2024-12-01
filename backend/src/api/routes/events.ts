@@ -6,9 +6,10 @@ const router: Router = Router();
 export default (app: Router) => {
     router.get("/", requireAuthorization, getAllEvents);                     // Get list of all events
     router.get("/similar", requireAuthorization, getSimilarEvents);         // Get list of similar events
+    router.get("/registered", requireAuthorization, getRegisteredEvents);   // Get list of registered events
     router.post("/", requireAuthorization, createEvent);                     // Create a new event
     router.get("/:id", requireAuthorization, getEventById);                 // Get event details by ID
-    router.get("/registered", requireAuthorization, getRegisteredEvents);   // Get list of registered events
+    
     router.post("/register", requireAuthorization, registerForEvent);       // Register/unregister for an event
     app.use("/events", router);
 };

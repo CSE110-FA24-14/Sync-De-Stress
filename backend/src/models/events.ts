@@ -29,6 +29,10 @@ const EventSchema: Schema<EventInterface> = new Schema({
     "userRegistered": {
         type: [String],
         default: []
+    },
+    "eventId":{
+        type: String,
+        default: ""
     }
     
 }, { versionKey: false });
