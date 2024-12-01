@@ -143,7 +143,6 @@ export async function getRecommendedProfiles(userId: string) {
         musicPreference: profile.musicPreference,
         favArtists: profile.favArtists,
         friend: profile.friend,
-        friend_requested: profile.friend_requested,
         event_registered: eventRegistered,
       };
   

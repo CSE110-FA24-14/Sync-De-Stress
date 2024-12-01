@@ -44,7 +44,6 @@ export interface GetRecommendationResponseInterface extends BaseResponseInterfac
       musicPreference: string;
       favArtists: string;
       friend: string[];
-      friend_requested: string[];
       event_registered: EventResponseObject[];
     }[];
   }
