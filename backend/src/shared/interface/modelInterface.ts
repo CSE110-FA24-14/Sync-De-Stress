@@ -44,7 +44,7 @@ export interface EventInterface extends Document {
 
 export const NOTIFICATION_MATCH_REQUEST = 0;
 export const NOTIFICATION_MATCHED = 1;
-
+export const NOTIFICATION_MATCH_DENIED = 2;
 
 export interface NotificationInterface extends Document {
   userId: string; // userId of the user that this notification belongs to
