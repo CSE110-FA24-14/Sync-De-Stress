@@ -1,6 +1,35 @@
 import EventModel from '../models/events';
 import ProfileModel from '../models/profile';
 
+
+export async function createEventService(eventData: any) {
+    try {
+        const newEvent = new EventModel(eventData);
+        return await newEvent.save();
+    } catch (error: any) {
+        console.error("Error creating event:", error);
+
+        // Check if error is a validation error and rethrow it
+        if (error.name === "ValidationError") {
+            throw error;
+        }
+
+        throw new Error("Failed to create event");
+    }
+}
+
+export async function getEventByIdService(eventId: string) {
+    try {
+        // Fetch the event by its ID
+        const event = await EventModel.findById(eventId);
+        return event; // Return the event document or null if not found
+    } catch (error) {
+        console.error("Error fetching event by ID:", error);
+        throw new Error("Failed to fetch event by ID");
+    }
+}
+
+
 export async function getEvents(sort: string, max?: number) {
     // Determine the sort order
     const sortOrder = sort === 'asc' ? 1 : -1;
@@ -50,3 +79,4 @@ export async function registerOrUnregisterEvent(userId: string, eventId: string)
         return true; // Successfully unregistered
     }
 }
+

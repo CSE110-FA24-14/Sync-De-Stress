@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { BaseResponseInterface, GetEventResponseInterface, RegisterEventResponseInterface } from "../shared/interface/responseInterface";
+
+import { BaseResponseInterface, CreateEventInterface, GetEventResponseInterface, RegisterEventResponseInterface } from "../shared/interface/responseInterface";
+import { createEventService, getEventByIdService } from "../services/events";
+
+
 import { getEvents, registerOrUnregisterEvent } from "../services/events";
 import { register } from "./user";
 
@@ -69,37 +73,89 @@ export async function getAllEvents(req: Request, res: Response) {
         console.error(err);
         res.status(500).send(response);
     }
+
 }
 
 
 // Get list of similar events
 export async function getSimilarEvents(req: Request, res: Response) {
-    // Logic for fetching similar events
-    res.status(200).json({ message: 'List of similar events' });
+    // Placeholder logic for fetching similar events
+    res.status(200).json({ message: "List of similar events" });
 }
 
-// Create a new event
 export async function createEvent(req: Request, res: Response) {
-    // Logic for creating a new event
-    res.status(201).json({ message: 'Event created successfully' });
-}
+    let response: CreateEventInterface;
 
-// Get event details by ID
-export async function getEventById(req: Request, res: Response) {
-    // Logic for fetching event details by ID
-    const eventId = req.params.id;
-    res.status(200).json({ message: `Details for event ID: ${eventId}` });
+    // Define required parameters
+    const requiredParams = ["eventName", "eventDate", "location", "priceEstimate", "coverPhoto", "description"];
+
+    // Check for missing parameters
+    const missingParams = requiredParams.filter(param => !req.body[param]);
+
+    if (missingParams.length > 0) {
+        response = {
+            status: "failure",
+            message: `Validation Error: Missing required parameters: ${missingParams.join(", ")}.`,
+        };
+        return res.status(400).send(response);
+    }
+
+    try {
+        // Extract the authenticated user ID
+        const authPayload = req.body.authPayload;
+        const eventData = {
+            userId: authPayload.id,
+            eventName: req.body.eventName,
+            eventDate: new Date(req.body.eventDate),
+            location: req.body.location,
+            priceEstimate: req.body.priceEstimate,
+            coverPhoto: req.body.coverPhoto,
+            description: req.body.description,
+            attendees: [],
+        };
+
+        // Create the event via the service
+        const savedEvent = await createEventService(eventData);
+
+        // Return a success response
+        response = {
+            status: "success",
+            message: `Event '${savedEvent.eventName}' has been successfully created.`,
+            id: savedEvent._id,
+        };
+        return res.status(201).send(response);
+
+    } catch (err: any) {
+        // Handle validation errors (e.g., database-level validation)
+        if (err.name === "ValidationError") {
+            const messages = Object.values(err.errors).map((val: any) => val.message);
+            response = {
+                status: "failure",
+                message: `Validation Error: ${messages.join(", ")}`,
+            };
+            return res.status(400).send(response);
+        }
+
+        // Handle unexpected errors
+        response = {
+            status: "failure",
+            message: "There was a failure while trying to create the event, please try again",
+        };
+        console.error("CreateEventController Error:", err);
+        return res.status(500).send(response);
+    }
 }
 
 // Get list of registered events
 export async function getRegisteredEvents(req: Request, res: Response) {
-    // Logic for fetching registered events
-    res.status(200).json({ message: 'List of registered events' });
+    // Placeholder logic for fetching registered events
+    res.status(200).json({ message: "List of registered events" });
 }
 
 // Register/unregister for an event
 export async function registerForEvent(req: Request, res: Response) {
-    // Declare necessary variables
+
+     // Declare necessary variables
     let response: BaseResponseInterface;
     let requiredParams = ["eventId"];
     let containsRequiredParams = requiredParams.every(param => Object.keys(req.body).includes(param));
@@ -156,3 +212,39 @@ export async function registerForEvent(req: Request, res: Response) {
         }
     }
 }
+
+export async function getEventById(req: Request, res: Response) {
+    let response: CreateEventInterface;
+
+    try {
+        const { id } = req.params; // Extract event ID from route parameters
+
+        // Fetch event by ID using the service
+        const event = await getEventByIdService(id);
+
+        if (!event) {
+            response = {
+                status: "failure",
+                message: `Event with ID '${id}' not found.`,
+            };
+            return res.status(404).send(response);
+        }
+
+        // Success response
+        response = {
+            status: "success",
+            message: "Event details fetched successfully.",
+            data: event, // Return event details
+        };
+        return res.status(200).send(response);
+
+    } catch (err: any) {
+        response = {
+            status: "failure",
+            message: "An error occurred while fetching the event details.",
+        };
+        console.error("GetEventByIdController Error:", err);
+        return res.status(500).send(response);
+    }
+}
+

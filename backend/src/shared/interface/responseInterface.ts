@@ -5,6 +5,13 @@ export interface BaseResponseInterface {
     message: String;
 }
 
+export interface CreateEventInterface extends BaseResponseInterface{
+    status: String;
+    message: String;
+    id?: String;
+    data?: any;
+}
+
 export interface LoginResponseInterface extends BaseResponseInterface {
     email?: String;
     token?: String;
