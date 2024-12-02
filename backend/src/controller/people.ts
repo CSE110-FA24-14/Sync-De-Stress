@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { BaseResponseInterface, GetRecommendationResponseInterface } from '../shared/interface/responseInterface';
 import { getRecommendedProfiles } from '../services/profile';
-import { respondToFriendRequest, sendFriendRequest } from "../services/people";
+import { respondToFriendRequest, sendFriendRequest, getProfileByIdService } from "../services/people";
 
 // Get list of recommended people
 export async function getRecommendations(req: Request, res: Response) {
@@ -166,9 +166,32 @@ export async function getMatches(req: Request, res: Response) {
     res.status(200).json({ message: 'List of matches' });
 }
 
-// View matched profile
+
+
 export async function viewProfile(req: Request, res: Response) {
-    const userId = req.params.id;
-    // Logic for viewing a matched profile
-    res.status(200).json({ message: `Profile details for user ID: ${userId}` });
+    try {
+        const profileId = req.params.id;
+        const requesterId = req.body.authPayload.id;
+
+        const profile = await getProfileByIdService(profileId, requesterId);
+
+        if (!profile) {
+            return res.status(404).send({
+                status: "failure",
+                message: `Profile with ID '${profileId}' not found.`,
+            });
+        }
+
+        return res.status(200).send({
+            status: "success",
+            message: "Profile fetched successfully.",
+            data: profile,
+        });
+    } catch (error) {
+        console.error("Error fetching profile:", error);
+        return res.status(500).send({
+            status: "failure",
+            message: "An error occurred while fetching the profile.",
+        });
+    }
 }

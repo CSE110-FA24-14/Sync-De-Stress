@@ -1,4 +1,5 @@
 import ProfileModel from '../models/profile';
+import EventModel from "../models/events";
 import NotificationModel from '../models/notifications';
 import { NOTIFICATION_MATCH_DENIED, NOTIFICATION_MATCH_REQUEST, NOTIFICATION_MATCHED, NotificationInterface } from '../shared/interface/modelInterface';
 
@@ -109,3 +110,38 @@ export async function respondToFriendRequest(recipientUserId: string, requesterU
     await recipientProfile.save();
     await requesterProfile.save();
 }
+
+export async function getProfileByIdService(profileId: string, requesterId: string) {
+    try {
+        // Find the profile by ID
+        const profile = await ProfileModel.findOne({ userId: profileId }).lean();
+
+        if (!profile) {
+            return null; // Return null if the profile does not exist
+        }
+
+        // Exclude the `friend_requested` field
+        const { friend_requested, ...filteredProfile } = profile;
+
+        // Check if the requester is a friend
+        const isFriend = profile.friend.includes(requesterId);
+        if (!isFriend) {
+            delete (filteredProfile as any).contact; // Cast to `any` to bypass the TypeScript restriction
+        }
+
+        // Fetch detailed event information
+        const eventDetails = await EventModel.find({
+            _id: { $in: profile.event_registered },
+        });
+
+        // Add event details without modifying `event_registered`
+        return {
+            ...filteredProfile,
+            event_details: eventDetails,
+        };
+    } catch (error) {
+        console.error("Error fetching profile by ID:", error);
+        throw new Error("Failed to fetch profile by ID.");
+    }
+}
+
