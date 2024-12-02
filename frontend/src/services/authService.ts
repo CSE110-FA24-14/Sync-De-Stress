@@ -178,12 +178,75 @@ export const rsvpEvent = async (eventId: string, isRsvped: boolean) => {
 */
 
 // dummy profile interface
-export interface DummyProfileInterface {
-  profilePic: string;
+// export interface DummyProfileInterface {
+//   profilePic: string;
+//   userId: string;
+//   username: string;
+//   description: string;
+//   dateOfBirth: Date;
+//   year: string;
+//   major: string;
+//   college: string;
+//   classes: string;
+//   hobby: string;
+//   musicPreference: string;
+//   favArtists: string;
+// }
+
+// dummy profiles using dummy profile interface
+// const dummyProfiles: DummyProfileInterface[] = [
+//   {
+//     profilePic: default_svg,
+//     userId: "1",
+//     username: "johndoe",
+//     description: "concert goer addict. trying to find a buddy to go to sun god with!",
+//     dateOfBirth: new Date('December 5, 2003'),
+//     year: "4th Year",
+//     major: "Biology",
+//     college: "Sixth College",
+//     classes: "Chemistry, Anatomy",
+//     hobby: "attending concerts, finding new music",
+//     musicPreference: "Pop",
+//     favArtists: "Ariana Grande, Post Malone"
+//   },
+
+//   {
+//     profilePic: default_svg,
+//     userId: "2",
+//     username: "janedoe",
+//     description: "looking for a study buddy with an amazing study playlist",
+//     dateOfBirth: new Date('April 12, 2005'),
+//     year: "2nd Year",
+//     major: "Political Science",
+//     college: "Muir",
+//     classes: "Anthropology",
+//     hobby: "visiting all cafes in the city!",
+//     musicPreference: "Rock",
+//     favArtists: "Green Day, The Beatles"
+//   },
+
+//   {
+//     profilePic: default_svg,
+//     userId: "3",
+//     username: "jdoe",
+//     description: "i love and play all kinds of instruments: guitar, piano, drums, bass, ukelele, flute, violin, cello, trombone, triangle, harmonica, accordion, trumpet, etc. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//     dateOfBirth: new Date('September 13, 2004'),
+//     year: "3rd Year",
+//     major: "Mechanical Engineering",
+//     college: "Marshall",
+//     classes: "MAE 119",
+//     hobby: "playing musical instruments, practicing instruments, did i mention using instruments",
+//     musicPreference: "Live Music",
+//     favArtists: "Myself"
+//   },
+// ];
+
+// Define the RecommendationInterface
+export interface RecommendationInterface {
   userId: string;
   username: string;
   description: string;
-  dateOfBirth: Date;
+  dateOfBirth: string;
   year: string;
   major: string;
   college: string;
@@ -191,75 +254,75 @@ export interface DummyProfileInterface {
   hobby: string;
   musicPreference: string;
   favArtists: string;
+  friend: string[];
+  friend_requested: string[];
+  event_registered: EventResponseInterface[];
 }
 
-// dummy profiles using dummy profile interface
-const dummyProfiles: DummyProfileInterface[] = [
-  {
-    profilePic: default_svg,
-    userId: "1",
-    username: "johndoe",
-    description: "concert goer addict. trying to find a buddy to go to sun god with!",
-    dateOfBirth: new Date('December 5, 2003'),
-    year: "4th Year",
-    major: "Biology",
-    college: "Sixth College",
-    classes: "Chemistry, Anatomy",
-    hobby: "attending concerts, finding new music",
-    musicPreference: "Pop",
-    favArtists: "Ariana Grande, Post Malone"
-  },
+// Function to fetch recommendations
+export const fetchRecommenders = async (): Promise<RecommendationInterface[]> => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found.');
+    }
 
-  {
-    profilePic: default_svg,
-    userId: "2",
-    username: "janedoe",
-    description: "looking for a study buddy with an amazing study playlist",
-    dateOfBirth: new Date('April 12, 2005'),
-    year: "2nd Year",
-    major: "Political Science",
-    college: "Muir",
-    classes: "Anthropology",
-    hobby: "visiting all cafes in the city!",
-    musicPreference: "Rock",
-    favArtists: "Green Day, The Beatles"
-  },
+    const response = await axios.get(`${API_BASE_URL}/people/recommendations`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
 
-  {
-    profilePic: default_svg,
-    userId: "3",
-    username: "jdoe",
-    description: "i love and play all kinds of instruments: guitar, piano, drums, bass, ukelele, flute, violin, cello, trombone, triangle, harmonica, accordion, trumpet, etc. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    dateOfBirth: new Date('September 13, 2004'),
-    year: "3rd Year",
-    major: "Mechanical Engineering",
-    college: "Marshall",
-    classes: "MAE 119",
-    hobby: "playing musical instruments, practicing instruments, did i mention using instruments",
-    musicPreference: "Live Music",
-    favArtists: "Myself"
-  },
-];
+    if (response.status !== 200 || response.data.status !== 'success') {
+      throw new Error(response.data?.message || `Error: ${response.status}`);
+    }
 
-// get list of recommenders
-export const fetchRecommenders = async (): Promise<DummyProfileInterface[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(dummyProfiles);
-    }, 1000);
-  });
+    return response.data.recommendations;
+  } catch (error: any) {
+    throw error.response?.data || error.message || 'An unknown error occurred';
+  }
 };
 
+
+// get list of recommenders
+// export const fetchRecommenders = async (): Promise<DummyProfileInterface[]> => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve(dummyProfiles);
+//     }, 1000);
+//   });
+// };
+
 // send a match request
-export const matchReq = async (userId: string, reqSent: boolean): Promise<DummyProfileInterface> => {
-  return new Promise((resolve, reject) => {
-    const profileIndex = dummyProfiles.findIndex((prof) => prof.userId === userId);
-    if (profileIndex !== -1) {
-      const updatedReq = { ...dummyProfiles[profileIndex], reqSent };
-      dummyProfiles[profileIndex] = updatedReq;
-      resolve(updatedReq);
-    } else {
-      reject(new Error('match req error'));
+export const sendFriendRequest = async (targetUserId: string): Promise<boolean> => {
+  try {
+    // Retrieve the token from localStorage
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found.');
     }
-  });
+
+    // Make the POST request to the /people/match endpoint
+    const response = await axios.post(
+      `${API_BASE_URL}/people/match`,
+      { targetUserId },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    // Check if the response indicates success
+    if (response.status !== 200 || response.data.status !== 'success') {
+      throw new Error(response.data?.message || `Error: ${response.status}`);
+    }
+
+    // Return the response data
+    return true;
+  } catch (error: any) {
+    // Handle and throw errors appropriately
+    throw error.response?.data || error.message || 'An unknown error occurred';
+  }
 };

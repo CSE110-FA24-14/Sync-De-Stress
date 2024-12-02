@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchRecommenders, DummyProfileInterface, matchReq } from '../services/authService';
+import { fetchRecommenders, RecommendationInterface, sendFriendRequest } from '../services/authService';
 import ProfileComponent from '../styles/ProfileComponent';
 
 import play_svg from '../icons/play_svg.svg';
@@ -8,7 +8,7 @@ import rewind_svg from '../icons/rewind_svg.svg';
 import pause_svg from '../icons/pause_svg.svg';
 
 const People: React.FC = () => {
-    const [profiles, setProfiles] = useState<DummyProfileInterface[]>([]);
+    const [profiles, setProfiles] = useState<RecommendationInterface[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [playPauseStates, setPlayPauseStates] = useState<boolean[]>([]);
     const [error, setError] = useState<string>(''); 
@@ -55,6 +55,10 @@ const People: React.FC = () => {
     const togglePlayPause = async () => {
         const currentProfile = profiles[currentIndex];
         const currentRequestSentState = playPauseStates[currentIndex];
+        
+        if(currentRequestSentState){
+            return
+        }
 
         try {
             setPlayPauseStates((prevStates) => {
@@ -63,13 +67,9 @@ const People: React.FC = () => {
             return updatedStates;
             });
 
-            const updatedReqProfile = await matchReq(currentProfile.userId, !currentRequestSentState);
+            const updatedReqProfile = await sendFriendRequest(currentProfile.userId);
 
-            setProfiles((prevProfiles) =>
-                prevProfiles.map((prof) =>
-                    prof.userId === updatedReqProfile.userId ? updatedReqProfile : prof
-                )
-            );
+            // setProfiles([...profiles].filter(p => p.userId != currentProfile.userId));
 
         } catch (err: any) {
             setError(err.message || 'Failed to send match request.');
@@ -79,18 +79,18 @@ const People: React.FC = () => {
     if (loading) return <div>Loading Profiles...</div>;
     if (error) return <div>{error}</div>;
 
-    const { profilePic, username, description, dateOfBirth, year, major, college, classes, hobby, musicPreference, favArtists } = profiles[currentIndex];
+    const { username, description, dateOfBirth, year, major, college, classes, hobby, musicPreference, favArtists } = profiles[currentIndex];
 
     return (
         <>
             <div>
                 <ProfileComponent
                     key={profiles[currentIndex].userId}
-                    profilePic={profilePic}
+                    profilePic={''}
                     userId={profiles[currentIndex].userId}
                     username={username}
                     description={description}
-                    dateOfBirth={dateOfBirth}
+                    dateOfBirth={new Date(dateOfBirth)}
                     year={year}
                     major={major}
                     college={college}
