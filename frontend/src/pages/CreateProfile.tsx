@@ -5,14 +5,19 @@ import { create_profile } from '../services/authService';
 
 const CreateProfile: React.FC = () => {
   const [name, setName] = useState('');
-  const [bio, setBio] = useState('');
+  const [bio, setBio] = useState<string | undefined>('');
+  const [dob, setDob] = useState<Date | null>(null);
+  const [year, setYear] = useState('1st Year');
+  const [major, setMajor] = useState('Astronomy & Astrophysics');
+  const [college, setCollege] = useState('Revelle');
   const [classes, setClasses] = useState('');
   const [hobby, setHobby] = useState('');
   const [contact, setContact] = useState('');
+  const [genre, setGenre] = useState('Pop music');
   const [songs, setSongs] = useState('');
   const [singers, setSingers] = useState('');
-  const [profileImage, setProfileImage] = useState<File | null>(null); 
-  const [previewImage, setPreviewImage] = useState<string | null>(null); 
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
@@ -20,18 +25,35 @@ const CreateProfile: React.FC = () => {
   const handleCreateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setError(''); 
-    setSuccess(''); 
+    setError('');
+    setSuccess('');
 
     try {
-        const response = await create_profile(name, bio, classes, hobby, contact, songs, singers);
-        console.log(response);
-        setSuccess('profile successfully created');
-        navigate('/home');
-      } catch (err: any) {
-        console.error('Error during profile creation:', err); // Log the full error
-        const errorMessage = err.response?.data?.message || 'Failed to create a profile';
-        setError(errorMessage);
+      const dobDate = dob ? new Date(dob) : null;
+
+      console.log(dobDate)
+
+      const response = await create_profile(
+        name,
+        bio,
+        dobDate!,
+        year,
+        major,
+        college,
+        classes,
+        hobby,
+        contact,
+        genre,
+        songs,
+        singers
+      );
+      console.log(response);
+      setSuccess('profile successfully created');
+      navigate('/home');
+    } catch (err: any) {
+      console.error('Error during profile creation:', err); // Log the full error
+      const errorMessage = err.response?.data?.message || 'Failed to create a profile';
+      setError(errorMessage);
     }
   };
 
@@ -39,7 +61,7 @@ const CreateProfile: React.FC = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setProfileImage(file);
-      setPreviewImage(URL.createObjectURL(file)); 
+      setPreviewImage(URL.createObjectURL(file));
     }
   };
 
@@ -50,19 +72,19 @@ const CreateProfile: React.FC = () => {
       {/* Profile Picture Section */}
       <div className="ProfileImage-container">
 
-        
+
         {previewImage ? (
           <img src={previewImage} alt="Profile Preview" className="ProfileImage-preview" />
         ) : (
 
-        <div className="ProfileImage-placeholder">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-          </svg>
-        </div>
-      )}
+          <div className="ProfileImage-placeholder">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>
+          </div>
+        )}
 
-       <label htmlFor="profileImageUpload" className="ProfileImage-button"> + </label>
+        <label htmlFor="profileImageUpload" className="ProfileImage-button"> + </label>
         <input
           id="profileImageUpload"
           type="file"
@@ -72,45 +94,48 @@ const CreateProfile: React.FC = () => {
         />
       </div>
 
-      <label><span style={{ color: "red", fontSize: "12px"}}>*Required</span></label>
+      <label><span style={{ color: "red", fontSize: "12px" }}>*Required</span></label>
 
       <form className="Form-section" onSubmit={handleCreateProfile}>
 
         {/* Name Field */}
-        <label><span style={{ color: "red"}}>*</span>Name</label>
+        <label><span style={{ color: "red" }}>*</span>Name</label>
         <div>
-            <input
-                type = "text"
-                placeholder="Enter your full name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-            />
+          <input
+            type="text"
+            placeholder="Enter your full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
         </div>
 
         {/* Description Field */}
         <label>Describe yourself (Bio)</label>
         <div>
-            <input 
-                type = "textarea"
-                placeholder="What do you want others to know about you?"
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-            />
+          <input
+            type="textarea"
+            placeholder="What do you want others to know about you?"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+          />
         </div>
 
         {/* Birthdate Field */}
         <div className="Form-section">
           <label>Birthdate</label>
-          <input 
-              type="date" 
+          <input
+            type="date"
+            onChange={(e) => setDob(e.target.value ? new Date(e.target.value) : null)}
+
           />
         </div>
 
         {/* Year Dropdown */}
-        <div className="Form-section">         
+        <div className="Form-section">
           <label><span style={{ color: "red" }}>*</span>Year</label>
-          <select>
+          <select
+            value={year} onChange={(e) => setYear(e.target.value)} required>
             <option value="1st Year">1st Year</option>
             <option value="2nd Year">2nd Year</option>
             <option value="3rd Year">3rd Year</option>
@@ -121,8 +146,9 @@ const CreateProfile: React.FC = () => {
         {/* Major Dropdown */}
         <div className="Form-section">
           <label><span style={{ color: "red" }}>*</span>Major</label>
-          <select>
-            <option value="Astronomy & Astrophysics">Astronomy & Astrophysics</option>  
+          <select
+            value={major} onChange={(e) => setMajor(e.target.value)} required>
+            <option value="Astronomy & Astrophysics">Astronomy & Astrophysics</option>
             <option value="Anthropology">Anthropology</option>
             <option value="Bioengineering (BE)">Bioengineering (BE)</option>
             <option value="Biological Sciences">Biological Sciences</option>
@@ -181,7 +207,8 @@ const CreateProfile: React.FC = () => {
         {/* College Dropdown */}
         <div className="Form-section">
           <label><span style={{ color: "red" }}>*</span>College</label>
-          <select>
+          <select
+            value={college} onChange={(e) => setCollege(e.target.value)} required>
             <option value="Revelle">Revelle</option>
             <option value="Muir">Muir</option>
             <option value="Marshall">Marshall</option>
@@ -196,122 +223,123 @@ const CreateProfile: React.FC = () => {
         {/* Classes Field */}
         <label><span style={{ color: "red" }}>*</span>Classes</label>
         <div>
-          <input 
-              type = "text"
-              placeholder="Enter your current classes"
-              value={classes}
-              onChange={(e) => setClasses(e.target.value)}
-              required
-           />
+          <input
+            type="text"
+            placeholder="Enter your current classes"
+            value={classes}
+            onChange={(e) => setClasses(e.target.value)}
+            required
+          />
         </div>
 
         {/* Hobby Field */}
         <label><span style={{ color: "red" }}>*</span>Hobby</label>
         <div>
-          <input 
-              type = "text"
-              placeholder="Enter your hobby"
-              value={hobby}
-              onChange={(e) => setHobby(e.target.value)}
-              required
+          <input
+            type="text"
+            placeholder="Enter your hobby"
+            value={hobby}
+            onChange={(e) => setHobby(e.target.value)}
+            required
           />
         </div>
 
         {/* Contact Field */}
         <label><span style={{ color: "red" }}>*</span>Contact (Phone # or Instagram ID)</label>
         <div>
-          <input 
-              type = "text"
-              placeholder="Enter your contact information"
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
-              required
+          <input
+            type="text"
+            placeholder="Enter your contact information"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+            required
           />
         </div>
-    
-      {/* Musical Preferences Section */}
-      <h3 className="MusicalPreference-header">Musical Preference</h3>
 
-      {/* Genre Dropdown */}
-      <div className="Form-section">
-        <label><span style={{ color: "red" }}>*</span>Genre</label>
-        <select>
-          <option value="Pop music">Pop music</option>
-          <option value="Rock">Rock</option>
-          <option value="Rhythm and blues">Rhythm and blues</option>
-          <option value="Jazz">Jazz</option>
-          <option value="Popular music">Popular music</option>
-          <option value="Blues">Blues</option>
-          <option value="Electronic music">Electronic music</option>
-          <option value="Hip hop music">Hip hop music</option>
-          <option value="Country music">Country music</option>
-          <option value="Classical music">Classical music</option>
-          <option value="Heavy metal">Heavy metal</option>
-          <option value="Alternative rock">Alternative rock</option>
-          <option value="Funk">Funk</option>
-          <option value="Dance music">Dance music</option>
-          <option value="Indie rock">Indie rock</option>
-          <option value="Punk rock">Punk rock</option>
-          <option value="Soul music">Soul music</option>
-          <option value="Reggae">Reggae</option>
-          <option value="World music">World music</option>
-          <option value="New-age music">New-age music</option>
-          <option value="Folk music">Folk music</option>
-          <option value="Disco">Disco</option>
-          <option value="Hip hop">Hip hop</option>
-          <option value="Music of Latin America">Music of Latin America</option>
-          <option value="Electronic dance music">Electronic dance music</option>
-          <option value="Ska">Ska</option>
-          <option value="Progressive rock">Progressive rock</option>
-          <option value="Synth-pop">Synth-pop</option>
-          <option value="Experimental music">Experimental music</option>
-          <option value="Singing">Singing</option>
-          <option value="Grunge">Grunge</option>
-          <option value="New wave">New wave</option>
-          <option value="Easy listening">Easy listening</option>
-          <option value="Christian music">Christian music</option>
-          <option value="Techno">Techno</option>
-          <option value="Electronica">Electronica</option>
-          <option value="Jazz fusion">Jazz fusion</option>
-          <option value="Ambient music">Ambient music</option>
-          <option value="Dubstep">Dubstep</option>
-          <option value="Flamenco">Flamenco</option>
-          <option value="House music">House music</option>
-          <option value="Hardcore punk">Hardcore punk</option>
-          <option value="Emo">Emo</option>
-          <option value="K-pop">K-pop</option>
-          <option value="Indian classical music">Indian classical music</option>
-          <option value="Gospel music">Gospel music</option>
-          <option value="Hard rock">Hard rock</option>
-        </select>
-      </div>
+        {/* Musical Preferences Section */}
+        <h3 className="MusicalPreference-header">Musical Preference</h3>
 
-      {/* Favorite Songs Field */}
-      <label><span style={{ color: "red" }}>*</span>Favorite Songs</label>
-      <div>
-        <input
-            type = "text"
+        {/* Genre Dropdown */}
+        <div className="Form-section">
+          <label><span style={{ color: "red" }}>*</span>Genre</label>
+          <select
+          value={genre}>
+            <option value="Pop music">Pop music</option>
+            <option value="Rock">Rock</option>
+            <option value="Rhythm and blues">Rhythm and blues</option>
+            <option value="Jazz">Jazz</option>
+            <option value="Popular music">Popular music</option>
+            <option value="Blues">Blues</option>
+            <option value="Electronic music">Electronic music</option>
+            <option value="Hip hop music">Hip hop music</option>
+            <option value="Country music">Country music</option>
+            <option value="Classical music">Classical music</option>
+            <option value="Heavy metal">Heavy metal</option>
+            <option value="Alternative rock">Alternative rock</option>
+            <option value="Funk">Funk</option>
+            <option value="Dance music">Dance music</option>
+            <option value="Indie rock">Indie rock</option>
+            <option value="Punk rock">Punk rock</option>
+            <option value="Soul music">Soul music</option>
+            <option value="Reggae">Reggae</option>
+            <option value="World music">World music</option>
+            <option value="New-age music">New-age music</option>
+            <option value="Folk music">Folk music</option>
+            <option value="Disco">Disco</option>
+            <option value="Hip hop">Hip hop</option>
+            <option value="Music of Latin America">Music of Latin America</option>
+            <option value="Electronic dance music">Electronic dance music</option>
+            <option value="Ska">Ska</option>
+            <option value="Progressive rock">Progressive rock</option>
+            <option value="Synth-pop">Synth-pop</option>
+            <option value="Experimental music">Experimental music</option>
+            <option value="Singing">Singing</option>
+            <option value="Grunge">Grunge</option>
+            <option value="New wave">New wave</option>
+            <option value="Easy listening">Easy listening</option>
+            <option value="Christian music">Christian music</option>
+            <option value="Techno">Techno</option>
+            <option value="Electronica">Electronica</option>
+            <option value="Jazz fusion">Jazz fusion</option>
+            <option value="Ambient music">Ambient music</option>
+            <option value="Dubstep">Dubstep</option>
+            <option value="Flamenco">Flamenco</option>
+            <option value="House music">House music</option>
+            <option value="Hardcore punk">Hardcore punk</option>
+            <option value="Emo">Emo</option>
+            <option value="K-pop">K-pop</option>
+            <option value="Indian classical music">Indian classical music</option>
+            <option value="Gospel music">Gospel music</option>
+            <option value="Hard rock">Hard rock</option>
+          </select>
+        </div>
+
+        {/* Favorite Songs Field */}
+        <label><span style={{ color: "red" }}>*</span>Favorite Songs</label>
+        <div>
+          <input
+            type="text"
             placeholder="Enter your favorite songs"
             value={songs}
             onChange={(e) => setSongs(e.target.value)}
             required
-        />
-      </div>
+          />
+        </div>
 
-      {/* Favorite Artists Field */}
-      <label><span style={{ color: "red" }}>*</span>Favorite Singers/Artists</label>
-      <div>
-        <input
-            type = "text"
+        {/* Favorite Artists Field */}
+        <label><span style={{ color: "red" }}>*</span>Favorite Singers/Artists</label>
+        <div>
+          <input
+            type="text"
             placeholder="Enter your favorite singers/artists"
             value={singers}
             onChange={(e) => setSingers(e.target.value)}
             required
-        />
-      </div>
+          />
+        </div>
 
-      {/* Next Button */}
-      <button className="Next-button">Next</button>
+        {/* Next Button */}
+        <button className="Next-button">Next</button>
 
       </form>
 

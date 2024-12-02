@@ -29,9 +29,28 @@ export const login = async (email: string, password: string) => {
 };
 
 //CREATE-SUCCESS
-export const create_profile = async (name: string, bio: string, classes: string, hobby: string, contact: string, songs: string, singers: string) => {
+export const create_profile = async (
+    name: string, bio: string | undefined, dob: Date, year: string, major: string, college: string, classes: string, hobby: string, contact: string, genre: string, songs: string, singers: string) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/profile`, {name, bio, classes, hobby, contact, songs, singers});
+    const token = await localStorage.getItem('token');
+    const response = await axios.put(`${API_BASE_URL}/profile`, {
+        username: name,
+        description: bio, 
+        dateOfBirth: dob, 
+        year, 
+        major, 
+        college,
+        classes,
+        hobby,
+        musicPreference: genre,
+        favArtists: singers,
+        contact
+      }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
     console.log(response.data);
     return response.data;
   } catch (error: any) {
