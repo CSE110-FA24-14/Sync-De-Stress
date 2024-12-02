@@ -5,7 +5,7 @@ import './EventComponent.css';
 interface EventProps {
   id: string;
   title: string;
-  date: string;
+  date: Date;
   location: string;
   attendees: number;
   isRsvped: boolean; 
@@ -41,7 +41,7 @@ const EventComponent: React.FC<EventProps> = ({
       <div className="event-info">
         <h3 className="event-title">{title}</h3>
         <p className="event-details">
-          <span role="img" aria-label="calendar">📅</span> {date}
+          <span role="img" aria-label="calendar">📅</span> {new Date(date).toLocaleString('en-US')}
         </p>
         <p className="event-details">
           <span role="img" aria-label="location">📍</span>{location}</p>

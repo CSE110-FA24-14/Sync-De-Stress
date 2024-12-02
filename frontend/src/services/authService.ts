@@ -1,10 +1,9 @@
 // src/services/authService.ts
 import axios from 'axios';
-import { EventInterface } from '../../../backend/src/shared/interface/modelInterface';
 
 import default_svg from '../icons/default_svg.svg';
 
-const API_BASE_URL = 'http://localhost:3202'; 
+const API_BASE_URL = 'http://localhost:3202';
 
 
 //SIGN-UP
@@ -30,22 +29,22 @@ export const login = async (email: string, password: string) => {
 
 //CREATE-SUCCESS
 export const create_profile = async (
-    name: string, bio: string | undefined, dob: Date, year: string, major: string, college: string, classes: string, hobby: string, contact: string, genre: string, songs: string, singers: string) => {
+  name: string, bio: string | undefined, dob: Date, year: string, major: string, college: string, classes: string, hobby: string, contact: string, genre: string, songs: string, singers: string) => {
   try {
     const token = await localStorage.getItem('token');
     const response = await axios.put(`${API_BASE_URL}/profile`, {
-        username: name,
-        description: bio, 
-        dateOfBirth: dob, 
-        year, 
-        major, 
-        college,
-        classes,
-        hobby,
-        musicPreference: genre,
-        favArtists: singers,
-        contact
-      }, {
+      username: name,
+      description: bio,
+      dateOfBirth: dob,
+      year,
+      major,
+      college,
+      classes,
+      hobby,
+      musicPreference: genre,
+      favArtists: singers,
+      contact
+    }, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -67,75 +66,91 @@ export const createEvent = async (eventData: {
   attendees: number;
 }) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/api/events/create`, eventData);
+    const response = await axios.post(`${API_BASE_URL}/events`, eventData);
     return response.data; // Return the created event
   } catch (error: any) {
     throw error.response?.data || error.message;
   }
 };
 
-export interface DummyEventInterface {
+export interface EventResponseInterface {
   id: string;
-  title: string;
-  date: string;
-  time: string;
-  location: string;
-  attendees: number;
-  isRsvped: boolean;
+  eventName: string; // Event name
+  description?: string; // Optional event description
+  eventDate: Date; //Event Date and Time
+  location: string; // Event location
+  priceEstimate?: number; // Optional price estimate
+  coverPhoto?: string; // Optional cover photo (e.g., URL or binary data)
+  attendee: number; // number of userRegistered
+  registered: boolean;
 }
 
 // Dummy events data using the DummyEventInterface
-const dummyEvents: DummyEventInterface[] = [
-  {
-    id: '1',
-    title: "John Doe's Concert",
-    date: '2024-12-01',
-    time: '18:00',
-    location: 'Epstein Family Amphitheater',
-    attendees: 1,
-    isRsvped: false,
-  },
-  {
-    id: '2',
-    title: "Jane Doe's Concert",
-    date: '2024-12-05',
-    time: '19:00',
-    location: 'Central Park Stage',
-    attendees: 0,
-    isRsvped: true,
-  },
-  {
-    id: '3',
-    title: 'Rock the Night Festival',
-    date: '2024-12-10',
-    time: '20:00',
-    location: 'Downtown Arena',
-    attendees: 0,
-    isRsvped: false,
-  },
-];
+// const dummyEvents: EventInterface[] = [
+//   {
+//     id: '1',
+//     title: "John Doe's Concert",
+//     date: '2024-12-01',
+//     time: '18:00',
+//     location: 'Epstein Family Amphitheater',
+//     attendees: 1,
+//     isRsvped: false,
+//   },
+//   {
+//     id: '2',
+//     title: "Jane Doe's Concert",
+//     date: '2024-12-05',
+//     time: '19:00',
+//     location: 'Central Park Stage',
+//     attendees: 0,
+//     isRsvped: true,
+//   },
+//   {
+//     id: '3',
+//     title: 'Rock the Night Festival',
+//     date: '2024-12-10',
+//     time: '20:00',
+//     location: 'Downtown Arena',
+//     attendees: 0,
+//     isRsvped: false,
+//   },
+// ];
 
-// FETCH ALL EVENTS (mock implementation)
-export const fetchEvents = async (): Promise<DummyEventInterface[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(dummyEvents);
-    }, 1000);
-  });
+export const fetchEvents = async (): Promise<EventResponseInterface[]> => {
+  try {
+    const token = await localStorage.getItem('token');
+    const response = await axios.get(`${API_BASE_URL}/events`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+    if(response.status != 200 || response.data.status != 'success'){
+      throw new Error(response.data?.message || response.status);
+    }
+    return response.data.events;
+  } catch (error: any) {
+    throw error.response?.data || error.message;
+  }
 };
 
 // RSVP TO AN EVENT (mock implementation)
-export const rsvpEvent = async (eventId: string, isRsvped: boolean): Promise<DummyEventInterface> => {
-  return new Promise((resolve, reject) => {
-    const eventIndex = dummyEvents.findIndex((event) => event.id === eventId);
-    if (eventIndex !== -1) {
-      const updatedEvent = { ...dummyEvents[eventIndex], isRsvped };
-      dummyEvents[eventIndex] = updatedEvent; // Update mock data
-      resolve(updatedEvent);
-    } else {
-      reject(new Error('Event not found'));
+export const rsvpEvent = async (eventId: string, isRsvped: boolean): Promise<boolean> => {
+  try {
+    const token = await localStorage.getItem('token');
+    const response = await axios.post(`${API_BASE_URL}/events/register`, {
+      eventId
+    }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if(response.status != 200 || response.data.status != 'success'){
+      throw new Error(response.data?.message || response.status);
     }
-  });
+    return response.data.unregistered;
+  } catch (error: any) {
+    throw error.response?.data || error.message;
+  }
 };
 
 /*
