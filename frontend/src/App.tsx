@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
+import CreateProfile from './pages/CreateProfile';
+import Events from './pages/Events';
+import People from './pages/People';
+import Profile from './pages/Profile';
+import NavBar from './NavBar';
+import CreateEvent from './pages/CreateEvent';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Router>
+      <div className='content'>
+        <NavBarState />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="*" element={<Login />} />
+          <Route path="/CreateProfile" element={<CreateProfile />} />
+          <Route path="/home" element={<Events />} />
+          <Route path="/people" element={<People />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
+
+const NavBarState = () => {
+  const location = useLocation();
+  const navBarPaths = ['/home', '/people', '/profile'];
+  return navBarPaths.includes(location.pathname) ? <NavBar /> : null;
+};
 
 export default App;

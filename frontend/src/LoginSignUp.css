@@ -1,0 +1,64 @@
+body {
+    background-color: #fef7ff;
+  }
+  
+  .App {
+    text-align: center;
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+  }
+  
+  .LoginSignUp-header {
+    text-align: center;
+    font-family: sans-serif; /* Roboto Font */
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 32px;
+    color: #1D1B20;
+    margin-left: 70px;
+    margin-right: 70px;
+    margin-top: 200px;
+    margin-bottom: 50px;
+  }
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the inputs horizontally */
+    margin: 0 auto; /* Center the form within the page */
+    padding: 20px;
+  }
+  
+  input {
+    background: #E6E0E9;
+    width: 338px;
+    height: 40px;
+    border-radius: 4px 4px 0px 0px;
+    padding: 10px;
+    border: none;
+    margin-bottom: 39px; /* Spacing between inputs */
+    outline: none; /* Removes blue outline on focus */
+  }
+  
+  .login-form button {
+    text-align: center;
+    border-radius: 100px;
+    background-color: #65558F;
+    border: none;
+    padding: 10px;
+    font-size: 15px;
+    color: white;
+    width: 118px;
+    height: 40px;
+    margin-top: 20px; /* Add some space above the button */
+  }
+  
+  .login-form button:hover {
+    background-color: #8f79c7;
+    cursor: pointer;
+  }
+  
+  .form-link {
+    text-align: center;
+    margin-top: 20px;
+  }
