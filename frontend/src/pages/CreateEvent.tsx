@@ -136,15 +136,6 @@ const CreateEvent: React.FC = () => {
         </div>
 
         <div className="Form-section">
-          <label>Price Description</label>
-          <textarea
-            placeholder="Enter pricing details"
-            value={priceDescription}
-            onChange={(e) => setPriceDescription(e.target.value)}
-          ></textarea>
-        </div>
-
-        <div className="Form-section">
           <label>Event Cover Photo</label>
           <div className="EventImage-container">
             {previewImage ? (

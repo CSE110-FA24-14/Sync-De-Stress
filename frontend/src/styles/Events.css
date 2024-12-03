@@ -1,17 +1,28 @@
+.events-wrapper {
+    padding: 20px;
+}
+
 .events-wrapper .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  
-  .create-event-button {
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+
+.events-wrapper .header h1 {
+    margin: 0;
+    padding-right: 16px;
+}
+
+.create-event-button {
     display: flex;
     align-items: center;
     cursor: pointer;
-  }
-  
-  .create-event-button button {
+    margin-left: auto;
+}
+
+.create-event-button button {
     background-color: #f0f0f0;
     border: none;
     border-radius: 50%;
@@ -23,10 +34,9 @@
     align-items: center;
     justify-content: center;
     margin-right: 8px;
-  }
-  
-  .create-event-button span {
+}
+
+.create-event-button span {
     color: #888;
     font-size: 14px;
-  }
-  
+}

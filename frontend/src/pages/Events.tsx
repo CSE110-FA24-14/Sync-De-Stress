@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { fetchEvents, rsvpEvent, EventResponseInterface } from '../services/authService';
 import EventComponent from '../styles/EventComponent';
-import { useNavigate } from 'react-router-dom'; 
+import '../styles/Events.css';
+import { useNavigate } from 'react-router-dom';
 
 const Events: React.FC = () => {
   const [events, setEvents] = useState<EventResponseInterface[]>([]);
@@ -37,45 +38,15 @@ const Events: React.FC = () => {
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
   return (
-    <div className="events-wrapper" style={{ padding: '20px' }}>
-      <div
-        className="header"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '20px',
-        }}
-      >
-        <h1 style={{ margin: 0, paddingRight: '16px' }}>Events Page</h1>
+    <div className="events-wrapper">
+      <div className="header">
+        <h1>Current Events</h1>
         <div
           className="create-event-button"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-            marginLeft: 'auto',
-          }}
           onClick={() => navigate('/createevent')}
         >
-          <button
-            style={{
-              backgroundColor: '#f0f0f0',
-              border: 'none',
-              borderRadius: '50%',
-              width: '32px',
-              height: '32px',
-              fontSize: '20px',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '8px',
-            }}
-          >
-            +
-          </button>
-          <span style={{ color: '#888', fontSize: '14px' }}>Create Event</span>
+          <button>+</button>
+          <span>Create Event</span>
         </div>
       </div>
       {events.map((event) => (
