@@ -6,6 +6,7 @@ import play_svg from '../icons/play_svg.svg';
 import skip_svg from '../icons/skip_svg.svg';
 import rewind_svg from '../icons/rewind_svg.svg';
 import pause_svg from '../icons/pause_svg.svg';
+import default_svg from '../icons/default_svg.svg';
 
 const People: React.FC = () => {
     const [profiles, setProfiles] = useState<RecommendationInterface[]>([]);
@@ -76,7 +77,7 @@ const People: React.FC = () => {
             <div>
                 <ProfileComponent
                     key={profiles[currentIndex].userId}
-                    profilePic={''}
+                    profilePic={default_svg}
                     userId={profiles[currentIndex].userId}
                     username={username}
                     description={description}
