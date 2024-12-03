@@ -42,16 +42,6 @@ const People: React.FC = () => {
         }
     };
 
-    /*
-    const togglePlayPause = () => {
-        setPlayPauseStates((prevStates) => {
-            const updatedStates = [...prevStates];
-            updatedStates[currentIndex] = !updatedStates[currentIndex];
-            return updatedStates;
-        });
-    };
-    */
-
     const togglePlayPause = async () => {
         const currentProfile = profiles[currentIndex];
         const currentRequestSentState = playPauseStates[currentIndex];

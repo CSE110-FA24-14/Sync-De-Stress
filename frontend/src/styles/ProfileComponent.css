@@ -5,7 +5,7 @@
     border: 2px solid black;
     border-radius: 20px;
     background-color: #ece6f0;
-    margin: 20px auto 65px auto; /* added bottom margin of 150px */
+    margin: 20px auto 65px auto;
 }
 
 h1 {
@@ -19,7 +19,7 @@ p {
 
 .media-controls {
     position: fixed;
-    bottom: 115px;
+    bottom: 125px; /* changed from 115 */
     left: 0;
     right: 0;
     display: flex; 
