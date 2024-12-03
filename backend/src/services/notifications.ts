@@ -35,6 +35,7 @@ export async function getUserNotifications(userId: string) {
             // Return formatted notification
             return {
                 title,
+                type: notification.type,
                 targetId: notification.targetId,
                 date: notification.date,
             };
