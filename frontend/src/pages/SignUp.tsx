@@ -1,7 +1,7 @@
 // src/pages/SignUp.tsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { register } from '../services/authService';
+import { login, register } from '../services/authService';
 import '../LoginSignUp.css'; 
 
 const SignUp: React.FC = () => {
@@ -22,6 +22,8 @@ const SignUp: React.FC = () => {
     try {
       const response = await register(email, password);
       console.log(response);
+      const loginResponse = await login(email, password);
+      localStorage.setItem('token', loginResponse.token);
       navigate('/CreateProfile'); // Redirect to create profile page on successful registration
     } catch (err: any) {
       setError(err.message || 'Registration failed');
