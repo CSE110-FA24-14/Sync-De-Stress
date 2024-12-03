@@ -1,21 +1,22 @@
-import { Request, Response } from "express";
-import { getNotificationsService } from "../services/notifications";
+import { Request, Response } from 'express';
+import { getUserNotifications } from '../services/notifications';
 
 export async function getNotifications(req: Request, res: Response) {
     try {
-        const userId = req.body.authPayload.id; // Get user ID from token
-        const notifications = await getNotificationsService(userId);
+        const userId = req.body.authPayload.id; // Extract user ID from request
+        const notifications = await getUserNotifications(userId);
 
-        res.status(200).json({
-            status: "success",
-            message: "List of notifications",
-            data: notifications, // Include actual notifications here
+        return res.status(200).send({
+            status: 'success',
+            message: 'Notifications fetched successfully.',
+            data: notifications,
         });
     } catch (error) {
-        console.error("Error fetching notifications:", error);
-        res.status(500).json({
-            status: "failure",
-            message: "Failed to fetch notifications.",
+        console.error('Error fetching notifications:', error);
+
+        return res.status(500).send({
+            status: 'failure',
+            message: 'An error occurred while fetching notifications.',
         });
     }
 }
