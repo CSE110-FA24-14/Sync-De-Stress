@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import events_svg from './icons/events_svg.svg';
 import people_svg from './icons/people_svg.svg';
 import profile_svg from './icons/profile_svg.svg';
+import notification_svg from './icons/notification_svg.svg';
 
 import './NavBar.css';
 
@@ -51,6 +52,16 @@ const NavBar = () => {
                     </Link>
                     <div style={{ fontWeight: 'bold' }}>Profile</div>
                 </div>
+
+                <div style={{ textAlign: 'center' }}>
+                    <Link to="/notification" onClick={() => handleLinkClick('/notification')}>
+                        <div className={`events_wrapper ${isSelected('/notification') ? 'selected' : ''}`}>
+                            <img src={notification_svg} className='notification_svg'/>
+                        </div>
+                    </Link>
+                    <div style={{ fontWeight: 'bold' }}>Notification</div>
+                </div>
+
             </nav>
         </div>
     )

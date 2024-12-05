@@ -228,3 +228,97 @@ export const sendFriendRequest = async (targetUserId: string): Promise<boolean> 
     throw error.response?.data || error.message || 'An unknown error occurred';
   }
 };
+
+export interface NotificationInterface {
+  id: string;
+  title: string;
+  message: string;
+  icon: string;
+  status: string;
+  onUpdate: string;
+}
+
+export const fetchNotifications = async (): Promise<NotificationInterface[]> => {
+  try {
+    const token = await localStorage.getItem('token');
+    const response = await axios.get(`${API_BASE_URL}/notifications`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+    if(response.status != 200 || response.data.status != 'success'){
+      throw new Error(response.data?.message || response.status);
+    }
+    return response.data.notifications;
+  } catch (error: any) {
+    throw error.response?.data || error.message;
+  }
+};
+
+// accept a friend request
+export const acceptFriendRequest = async (targetUserId: string): Promise<boolean> => {
+  try {
+    // Retrieve the token from localStorage
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found.');
+    }
+
+    // Make the POST request to the /friends/accept endpoint
+    const response = await axios.post(
+      `${API_BASE_URL}/friends/accept`,
+      { Request },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    // Check if the response indicates success
+    if (response.status !== 200 || response.data.status !== 'success') {
+      throw new Error(response.data?.message || `Error: ${response.status}`);
+    }
+
+    // Return success
+    return true;
+    } catch (error: any) {
+      // Handle and throw errors appropriately
+      throw error.response?.data || error.message || 'An unknown error occurred';
+    }
+};
+
+// decline a friend request
+export const declineFriendRequest = async (targetUserId: string): Promise<boolean> => {
+  try {
+    // Retrieve the token from localStorage
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found.');
+    }
+
+    // Make the POST request to the /friends/decline endpoint
+    const response = await axios.post(
+      `${API_BASE_URL}/friends/decline`,
+      { Request },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    // Check if the response indicates success
+    if (response.status !== 200 || response.data.status !== 'success') {
+      throw new Error(response.data?.message || `Error: ${response.status}`);
+    }
+
+        // Return success
+        return true;
+      } catch (error: any) {
+        // Handle and throw errors appropriately
+        throw error.response?.data || error.message || 'An unknown error occurred';
+      }
+};
