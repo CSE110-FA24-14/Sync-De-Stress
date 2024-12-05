@@ -230,12 +230,10 @@ export const sendFriendRequest = async (targetUserId: string): Promise<boolean> 
 };
 
 export interface NotificationInterface {
-  id: string;
+  targetId: string;
   title: string;
-  message: string;
-  icon: string;
-  status: string;
-  onUpdate: string;
+  type: number;
+  date: Date;
 }
 
 export const fetchNotifications = async (): Promise<NotificationInterface[]> => {
@@ -256,7 +254,7 @@ export const fetchNotifications = async (): Promise<NotificationInterface[]> => 
 };
 
 // accept a friend request
-export const acceptFriendRequest = async (targetUserId: string): Promise<boolean> => {
+export const respondFriendRequest = async (requesterUserId: string, accept: boolean): Promise<boolean> => {
   try {
     // Retrieve the token from localStorage
     const token = localStorage.getItem('token');
@@ -266,8 +264,8 @@ export const acceptFriendRequest = async (targetUserId: string): Promise<boolean
 
     // Make the POST request to the /friends/accept endpoint
     const response = await axios.post(
-      `${API_BASE_URL}/friends/accept`,
-      { Request },
+      `${API_BASE_URL}/people/match/response`,
+      { requesterUserId, accept },
       {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -287,38 +285,4 @@ export const acceptFriendRequest = async (targetUserId: string): Promise<boolean
       // Handle and throw errors appropriately
       throw error.response?.data || error.message || 'An unknown error occurred';
     }
-};
-
-// decline a friend request
-export const declineFriendRequest = async (targetUserId: string): Promise<boolean> => {
-  try {
-    // Retrieve the token from localStorage
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('No authentication token found.');
-    }
-
-    // Make the POST request to the /friends/decline endpoint
-    const response = await axios.post(
-      `${API_BASE_URL}/friends/decline`,
-      { Request },
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    // Check if the response indicates success
-    if (response.status !== 200 || response.data.status !== 'success') {
-      throw new Error(response.data?.message || `Error: ${response.status}`);
-    }
-
-        // Return success
-        return true;
-      } catch (error: any) {
-        // Handle and throw errors appropriately
-        throw error.response?.data || error.message || 'An unknown error occurred';
-      }
 };

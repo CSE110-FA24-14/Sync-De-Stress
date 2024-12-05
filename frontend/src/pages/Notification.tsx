@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchNotifications, acceptFriendRequest, declineFriendRequest, NotificationInterface } from '../services/authService'; 
+import { fetchNotifications, NotificationInterface } from '../services/authService'; 
 import NotificationComponent from '../styles/NotificationComponent';
 
 const Notifications: React.FC = () => {
@@ -25,40 +25,51 @@ const Notifications: React.FC = () => {
   }, []);
 
   // Handle Accept Friend Request
-  const handleAccept = async (id: string) => {
-    try {
-      setLoading(true);
-      const success = await acceptFriendRequest(id);
-      if (success) {
-        // Update notification status locally
-        setNotifications((prev) =>
-          prev.map((notif) =>
-            notif.id === id ? { ...notif, status: 'accepted' } : notif
-          )
-        );
-      }
-    } catch (err: any) {
-      setError('Failed to accept friend request.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const handleAccept = async (id: string) => {
+  //   try {
+  //     setLoading(true);
+  //     const success = await acceptFriendRequest(id);
+  //     if (success) {
+  //       // Update notification status locally
+  //       setNotifications((prev) =>
+  //         prev.map((notif) =>
+  //           notif.id === id ? { ...notif, status: 'accepted' } : notif
+  //         )
+  //       );
+  //     }
+  //   } catch (err: any) {
+  //     setError('Failed to accept friend request.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // Handle Decline Friend Request
-  const handleDecline = async (id: string) => {
-    try {
-      setLoading(true);
-      const success = await declineFriendRequest(id);
-      if (success) {
-        // Remove notification from the list
-        setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+  // const handleDecline = async (id: string) => {
+  //   try {
+  //     setLoading(true);
+  //     const success = await declineFriendRequest(id);
+  //     if (success) {
+  //       // Remove notification from the list
+  //       setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+  //     }
+  //   } catch (err: any) {
+  //     setError('Failed to decline friend request.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const updateType = async (id: string, newType: number) => {
+    const updatedNotifications = notifications.map(n => {
+      if(n.targetId == id){
+        n.type = newType;
       }
-    } catch (err: any) {
-      setError('Failed to decline friend request.');
-    } finally {
-      setLoading(false);
-    }
-  };
+      return n;
+    });
+
+    setNotifications(updatedNotifications);
+  }
 
   if (loading) {
     return <p>Loading notifications...</p>;
@@ -75,19 +86,11 @@ const Notifications: React.FC = () => {
       ) : (
         notifications?.map((notification) => (
           <NotificationComponent
-            key={notification.id}
-            id={notification.id}
+            key={notification.targetId}
+            id={notification.targetId}
             title={notification.title}
-            message={notification.message}
-            icon={notification.icon}
-            status={notification.status === 'read'}
-            onUpdate={(id, status) => {
-              if (status) {
-                handleAccept(id);
-              } else {
-                handleDecline(id);
-              }
-            }}
+            type={notification.type}
+            updateType={updateType}
           />
         ))
       )}

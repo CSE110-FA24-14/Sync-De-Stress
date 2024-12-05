@@ -1,47 +1,63 @@
 import React, { useState } from 'react';
 import './NotificationComponent.css';
+import { respondFriendRequest } from '../services/authService';
 
 interface NotificationProps {
   id: string;
   title: string;
-  message: string;
-  icon?: string; // Optional icon URL
-  status: boolean; // Read/unread or action status
-  onUpdate: (id: string, status: boolean) => void; // Callback to handle status update
+  type: number;
+  updateType: (id: string, newType: number) => void;
 }
+
+const NOTIFICATION_MATCH_REQUEST = 0;
+const NOTIFICATION_MATCHED = 1;
+const NOTIFICATION_MATCH_DENIED = 2;
 
 const NotificationComponent: React.FC<NotificationProps> = ({
   id,
   title,
-  message,
-  icon,
-  status,
-  onUpdate,
+  type,
+  updateType
 }) => {
-  const [currentStatus, setCurrentStatus] = useState(status);
+  // const [currentStatus, setCurrentStatus] = useState(status);
 
-  const handleStatusChange = () => {
-    const newStatus = !currentStatus;
-    setCurrentStatus(newStatus);
-    onUpdate(id, newStatus); // Update via parent or API
+  const handleReject = () => {
+    respondFriendRequest(id, false);
+    updateType(id, NOTIFICATION_MATCH_DENIED);
+  };
+
+  const handleAccept = () => {
+    respondFriendRequest(id, true);
+    updateType(id, NOTIFICATION_MATCHED);
   };
 
   return (
     <div className="notification-bubble">
       <div className="notification-image">
-        <img src={icon || '/placeholder-icon.png'} alt="Notification Icon" className="notification-icon" />
+        <img src={'../icons/profile_svg.svg'} alt="Notification Icon" className="notification-icon" />
       </div>
       <div className="notification-info">
         <h3 className="notification-title">{title}</h3>
-        <p className="notification-message">{message}</p>
       </div>
       <div className="notification-actions">
-        <button
-          className={`status-button ${currentStatus ? 'checked' : 'unchecked'}`}
-          onClick={handleStatusChange}
-        >
-          {currentStatus ? '✔' : '+'}
-        </button>
+        {type == NOTIFICATION_MATCH_REQUEST ? (
+          <div>
+            <button
+              onClick={handleReject}
+            >
+              X
+            </button>
+            <button
+              onClick={handleAccept}
+            >
+              ✔
+            </button>
+          </div>
+
+        ) : (
+          <p>View Profile</p>
+        )}
+
       </div>
     </div>
   );
