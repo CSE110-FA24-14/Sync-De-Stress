@@ -70,10 +70,10 @@ const Notifications: React.FC = () => {
 
   return (
     <div className="notifications-wrapper">
-      {notifications.length === 0 ? (
+      {notifications != undefined && notifications.length === 0 ? (
         <p>No notifications available.</p>
       ) : (
-        notifications.map((notification) => (
+        notifications?.map((notification) => (
           <NotificationComponent
             key={notification.id}
             id={notification.id}

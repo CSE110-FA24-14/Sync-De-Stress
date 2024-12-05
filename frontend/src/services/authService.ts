@@ -249,7 +249,7 @@ export const fetchNotifications = async (): Promise<NotificationInterface[]> => 
     if(response.status != 200 || response.data.status != 'success'){
       throw new Error(response.data?.message || response.status);
     }
-    return response.data.notifications;
+    return response.data.data;
   } catch (error: any) {
     throw error.response?.data || error.message;
   }
