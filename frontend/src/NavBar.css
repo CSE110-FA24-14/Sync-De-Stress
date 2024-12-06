@@ -22,6 +22,11 @@
     height: auto;
 }
 
+.notification_svg {
+    width: 40px;
+    height: auto;
+}
+
 .events_wrapper:hover {
     background-color: #e8def8; 
     border-radius: 100px;

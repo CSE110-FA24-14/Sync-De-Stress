@@ -5,6 +5,7 @@ import CreateProfile from './pages/CreateProfile';
 import Events from './pages/Events';
 import People from './pages/People';
 import Profile from './pages/Profile';
+import Notification from './pages/Notification';
 import NavBar from './NavBar';
 import CreateEvent from './pages/CreateEvent';
 import './App.css';
@@ -20,8 +21,10 @@ function App() {
           <Route path="*" element={<Login />} />
           <Route path="/CreateProfile" element={<CreateProfile />} />
           <Route path="/home" element={<Events />} />
+          <Route path="/createevent" element={<CreateEvent />} />
           <Route path="/people" element={<People />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/notification" element={<Notification />} />
         </Routes>
       </div>
     </Router>
