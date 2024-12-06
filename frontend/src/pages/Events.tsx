@@ -13,7 +13,13 @@ const Events: React.FC = () => {
   const loadEvents = async () => {
     try {
       const eventsData = await fetchEvents();
-      setEvents(eventsData);
+      // events listed by day
+      const sortedEvents = eventsData.sort((a, b) => {
+        const dateA = new Date(a.eventDate).getTime();
+        const dateB = new Date(b.eventDate).getTime();
+        return dateA - dateB;
+      });
+      setEvents(sortedEvents);
       setLoading(false);
     } catch (err: any) {
       setError(err.message || 'Failed to load events.');
