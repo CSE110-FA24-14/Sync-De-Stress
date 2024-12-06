@@ -32,10 +32,10 @@ const CreateEvent: React.FC = () => {
       const eventData = {
         eventName: title,
         eventDate: date,
-        time,
-        location,
+        time: time || '',
+        location: location,
         attendees: 0,
-        description,
+        description: description || 'Description',
         priceEstimate: price || 0,
         coverPhoto: 'default.jpg', // edit later
       };
@@ -44,7 +44,7 @@ const CreateEvent: React.FC = () => {
       setSuccess('Event created successfully!');
       navigate('/home');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create event.');
+      setError(err.message || 'Failed to create event.');
     }
   };
   

@@ -73,7 +73,7 @@ export const createEvent = async (eventData: {
       {
         eventName: eventData.eventName,
         eventDate: eventData.eventDate,
-        time: eventData.time || '',
+        time: eventData.time,
         location: eventData.location,
         attendees: eventData.attendees || 0,
         description: eventData.description || '',

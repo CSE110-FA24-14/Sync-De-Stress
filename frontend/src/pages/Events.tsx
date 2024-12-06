@@ -13,13 +13,20 @@ const Events: React.FC = () => {
   const loadEvents = async () => {
     try {
       const eventsData = await fetchEvents();
-      // events listed by day
-      const sortedEvents = eventsData.sort((a, b) => {
-        const dateA = new Date(a.eventDate).getTime();
-        const dateB = new Date(b.eventDate).getTime();
-        return dateA - dateB;
-      });
-      setEvents(sortedEvents);
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // filter out old events and sort by date
+      const filteredEvents = eventsData
+        .filter((event) => new Date(event.eventDate) >= today)
+        .sort((a, b) => {
+          const dateA = new Date(a.eventDate).getTime();
+          const dateB = new Date(b.eventDate).getTime();
+          return dateA - dateB;
+        });
+
+      setEvents(filteredEvents);
       setLoading(false);
     } catch (err: any) {
       setError(err.message || 'Failed to load events.');
@@ -55,18 +62,22 @@ const Events: React.FC = () => {
           <span>Create Event</span>
         </div>
       </div>
-      {events.map((event) => (
-        <EventComponent
-          key={event.id}
-          id={event.id}
-          title={event.eventName}
-          date={event.eventDate}
-          location={event.location}
-          attendees={event.attendee}
-          isRsvped={event.registered}
-          onRsvp={handleRsvp}
-        />
-      ))}
+      {events.length === 0 ? (
+        <p>No upcoming events available.</p>
+      ) : (
+        events.map((event) => (
+          <EventComponent
+            key={event.id}
+            id={event.id}
+            title={event.eventName}
+            date={event.eventDate}
+            location={event.location}
+            attendees={event.attendee}
+            isRsvped={event.registered}
+            onRsvp={handleRsvp}
+          />
+        ))
+      )}
     </div>
   );
 };
