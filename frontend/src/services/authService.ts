@@ -55,21 +55,45 @@ export const create_profile = async (
   }
 };
 
-//CREATE EVENTS
+// CREATE EVENT
 export const createEvent = async (eventData: {
-  title: string;
-  date: string;
-  time: string;
-  location: string;
-  attendees: number;
+  eventName: string; // Matches "Event Title"
+  eventDate: string; // Matches "Date"
+  time?: string;
+  location: string; // Matches "Location"
+  attendees?: number; // Default value provided
+  description?: string;
+  priceEstimate?: number; // Matches "Price"
+  coverPhoto?: string; // Optional, placeholder for the event image
 }) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/events`, eventData);
-    return response.data; // Return the created event
+    const token = localStorage.getItem('token');
+    const response = await axios.post(
+      `${API_BASE_URL}/events`,
+      {
+        eventName: eventData.eventName,
+        eventDate: eventData.eventDate,
+        time: eventData.time,
+        location: eventData.location,
+        attendees: eventData.attendees || 0,
+        description: eventData.description || '',
+        priceEstimate: eventData.priceEstimate || 0,
+        coverPhoto: eventData.coverPhoto || '',
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log(response.data);
+    return response.data;
   } catch (error: any) {
-    throw error.response?.data || error.message;
+    throw error.response?.data?.message || error.message || 'An unknown error occurred';
   }
 };
+
 
 export interface EventResponseInterface {
   id: string;
@@ -83,36 +107,6 @@ export interface EventResponseInterface {
   registered: boolean;
 }
 
-// Dummy events data using the DummyEventInterface
-// const dummyEvents: EventInterface[] = [
-//   {
-//     id: '1',
-//     title: "John Doe's Concert",
-//     date: '2024-12-01',
-//     time: '18:00',
-//     location: 'Epstein Family Amphitheater',
-//     attendees: 1,
-//     isRsvped: false,
-//   },
-//   {
-//     id: '2',
-//     title: "Jane Doe's Concert",
-//     date: '2024-12-05',
-//     time: '19:00',
-//     location: 'Central Park Stage',
-//     attendees: 0,
-//     isRsvped: true,
-//   },
-//   {
-//     id: '3',
-//     title: 'Rock the Night Festival',
-//     date: '2024-12-10',
-//     time: '20:00',
-//     location: 'Downtown Arena',
-//     attendees: 0,
-//     isRsvped: false,
-//   },
-// ];
 
 export const fetchEvents = async (): Promise<EventResponseInterface[]> => {
   try {
